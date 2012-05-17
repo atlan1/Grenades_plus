@@ -1,0 +1,12 @@
+name: GrenadesPlus
+main: team.GrenadesPlus.GrenadesPlus
+version: 1.0
+depend: [Spout]
+authors: [SirTyler, Atlan1]
+description: >
+             Grenades+ - Grenades - make creepers go boom!
+commands:
+    grenades+:
+        description: Grenades+ commands.
+        aliases: [gren+,grenades]
+        usage: /grenades+ help - Displays the Help Menu.             

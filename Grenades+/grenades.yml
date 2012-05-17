@@ -1,0 +1,64 @@
+# Here you can configure your own grenades!
+# Look at the examples to see how it works.
+
+# There are two supercategories: Throwable (for throwable Grenades) and Placeable (for mines etc.)
+Throwable:
+    Grenade:
+        # the url of the texture you want to use
+        texture: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Textures/itemGrenade.png'
+        # the sound which will be played if the grenade is triggered
+        sound: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Sounds/stungrenade.ogg'
+        # the speed multiplier, means how fast AND how far the grenade will fly NOTE: it is a multiplier so 1.0 is the normal speed
+        speed-multiply: 1.2
+        # the effects radius, means the sphere radius which will be searched for entitys and blocks to perform effects at
+        radius: 4
+        # the trigger section specifies when the effects will happen, available for throwable are: time(time after which the grenade explodes), onhit(effects on grenade hit)
+        trigger:
+            time: 200
+            onhit: true
+        # the effects section is similar structured as in the GunPack, three sections: location(location of the grenade), entityInRange(all entities in the radius of the grenade), blocksInRange(you know^^)
+        # the effect nodes are the same as in the GunPack
+        effects:
+            location:
+                explosion:
+                    size: 4
+    SmokeGrenade:
+        texture: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Textures/itemGrenadeSmoke.png'
+        sound: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Sounds/smokegrenade.ogg'
+        speed-multiply: 1.3
+        radius: 5
+        trigger:
+            time: 100
+        effects:
+            blocksInRange:
+                smoke: 
+                    density: 200
+            entityInRange:
+                potion_15:
+                    duration: 200
+                    strength: 3
+Placeable:
+    Landmine:
+        # the url of the texture you want to use
+        texture: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Textures/Landmine.png'
+        # the sound which will be played if the placeable is triggered
+        sound: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Sounds/c4_explode1.wav'
+        # the design of the placeable explosive, currently only 'cube' available 
+        design: cube
+        # the hardness of the explosive
+        hardness: 10
+        # the radius of the explosive
+        radius: 5
+        # this node specifies when the triggers are activated; available: place (activated on place), click (activated if you click on a placed explosive)
+        type: place
+        # the trigger section specifies when the effects will happen, available for placeables are: time(time after which the grenade explodes), detonator(effects will happen if you rightclick with the detonator in your hand),
+        # shock (a radius which will be searched for entities and if one enteres the radius the explosive explodes)
+        trigger:
+            detonator: 'Detonator'
+            shock: 3
+            # the throwables
+        effects:
+            location:
+                explosion:
+                    size: 3
+    

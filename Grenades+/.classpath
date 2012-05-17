@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsOnMyOwn/lib/SpoutPluginAPI.jar"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/Plugins Test Server/craftbukkit-1.2.5-R1.0.jar"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/Plugins Test Server/plugins/LWC.jar"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/Plugins Test Server/plugins/WorldEdit/WorldGuard.jar"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/Plugins Test Server/plugins/FurnaceAPI.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
