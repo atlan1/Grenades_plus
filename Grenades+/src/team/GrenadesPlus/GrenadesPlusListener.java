@@ -6,7 +6,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-import team.GrenadesPlus.Util.GrenadesUtils;
+import team.GrenadesPlus.Util.ExplosiveUtils;
 import team.GrenadesPlus.Util.PlayerUtils;
 
 public class GrenadesPlusListener implements Listener{
@@ -22,9 +22,7 @@ public class GrenadesPlusListener implements Listener{
 		if(e.getAction().equals(Action.RIGHT_CLICK_AIR)||e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 			if(!PlayerUtils.hasSpoutcraft(e.getPlayer())) return;
 			SpoutPlayer sp = (SpoutPlayer) e.getPlayer();
-			if(GrenadesUtils.isGrenade(sp.getItemInHand())){
-				
-			}else if(GrenadesUtils.isExplosive(sp.getItemInHand())){
+			if(ExplosiveUtils.isThrowable(sp.getItemInHand())){
 				
 			}
 		}
@@ -35,9 +33,7 @@ public class GrenadesPlusListener implements Listener{
 		if(e.getAction().equals(Action.LEFT_CLICK_AIR)||e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
 			if(!PlayerUtils.hasSpoutcraft(e.getPlayer())) return;
 			SpoutPlayer sp = (SpoutPlayer) e.getPlayer();
-			if(GrenadesUtils.isGrenade(sp.getItemInHand())){
-				
-			}else if(GrenadesUtils.isExplosive(sp.getItemInHand())){
+			if(ExplosiveUtils.isThrowable(sp.getItemInHand())){
 				
 			}
 		}

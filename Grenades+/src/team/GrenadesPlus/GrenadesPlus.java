@@ -10,8 +10,8 @@ import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import team.GrenadesPlus.Block.Explosive;
-import team.GrenadesPlus.Item.Grenade;
+import team.GrenadesPlus.Block.Placeable;
+import team.GrenadesPlus.Item.Throwable;
 import team.GrenadesPlus.Manager.ConfigLoader;
 import team.GunsPlus.GunsPlus;
 
@@ -35,8 +35,8 @@ public class GrenadesPlus extends JavaPlugin{
 	public static boolean notifications = true;
 	public static boolean autoreload = true;
 	
-	public static List<Grenade> allGrenades = new ArrayList<Grenade>();
-	public static List<Explosive> allExplosives = new ArrayList<Explosive>();
+	public static List<Throwable> allThrowables = new ArrayList<Throwable>();
+	public static List<Placeable> allPlaceables = new ArrayList<Placeable>();
 	public static List<Material> transparentMaterials = new ArrayList<Material>();
 	
 	public static List<GrenadesPlusPlayer> GrenadesPlusPlayers = new ArrayList<GrenadesPlusPlayer>();

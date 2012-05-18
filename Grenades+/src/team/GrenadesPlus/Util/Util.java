@@ -28,13 +28,13 @@ import team.GrenadesPlus.GrenadesPlus;
 public class Util {
 	
 	public static boolean isGrenadesPlusMaterial(String name) {
-		for (int i = 0; i < GrenadesPlus.allGrenades.size(); i++) {
-			if (GrenadesPlus.allGrenades.get(i).getName().equalsIgnoreCase(name)) {
+		for (int i = 0; i < GrenadesPlus.allThrowables.size(); i++) {
+			if (GrenadesPlus.allThrowables.get(i).getName().equalsIgnoreCase(name)) {
 				return true;
 			}
 		}
-		for (int i = 0; i < GrenadesPlus.allExplosives.size(); i++) {
-			if (GrenadesPlus.allExplosives.get(i).getName().equalsIgnoreCase(name)) {
+		for (int i = 0; i < GrenadesPlus.allPlaceables.size(); i++) {
+			if (GrenadesPlus.allPlaceables.get(i).getName().equalsIgnoreCase(name)) {
 				return true;
 			}
 		}
@@ -44,15 +44,15 @@ public class Util {
 	public static Object getGrenadesPlusMaterial(String name) {
 		Object cm = null;
 		if(!isGrenadesPlusMaterial(name)) return cm;
-		for (int i = 0; i < GrenadesPlus.allGrenades.size(); i++) {
-			if (GrenadesPlus.allGrenades.get(i).getName().equalsIgnoreCase(name)) {
-				cm = GrenadesPlus.allGrenades.get(i);
+		for (int i = 0; i < GrenadesPlus.allThrowables.size(); i++) {
+			if (GrenadesPlus.allThrowables.get(i).getName().equalsIgnoreCase(name)) {
+				cm = GrenadesPlus.allThrowables.get(i);
 				return cm;
 			}
 		}
-		for (int i = 0; i < GrenadesPlus.allExplosives.size(); i++) {
-			if (GrenadesPlus.allExplosives.get(i).getName().equalsIgnoreCase(name)) {
-				cm = GrenadesPlus.allExplosives.get(i);
+		for (int i = 0; i < GrenadesPlus.allPlaceables.size(); i++) {
+			if (GrenadesPlus.allPlaceables.get(i).getName().equalsIgnoreCase(name)) {
+				cm = GrenadesPlus.allPlaceables.get(i);
 				return cm;
 			}
 		}

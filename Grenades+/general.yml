@@ -1,14 +1,14 @@
-# This is the general config file. Everything in here will affect all grenades and the whole plugin
+# This is the general config file. Everything in here will affect all explosives and the whole plugin
 
 # Write the ids of the custom items so you can copy them and use it in other plugins( e.g. mobarena)
-id-info-grenades: true
-id-info-detonators: true
+id-info-throwables: true
+id-info-placeables: true
 
 # Write the loaded items in the log on plugin start
-loaded-grenades: true
-loaded-detonators: true
+loaded-throwables: true
+loaded-placeables: true 
 
-# Can protect you against spamming ;)
+show-debug: false
 show-warnings: true
 
 transparent-materials: 0, 6, 83, 107, 68, 50, 18, 31, 8, 9, 10, 11, 101, 77, 113, 85, 75, 76, 90, 55, 30, 106, 111, 37, 38, 39, 40, 51, 59, 65

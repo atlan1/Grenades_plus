@@ -16,33 +16,33 @@ import team.GrenadesPlus.Util.Util;
 public class ConfigLoader {
 	
 	public static File generalFile;
-	public static File grenadesFile;
+	public static File explosivesFile;
 	public static File recipeFile;
 	public static FileConfiguration recipeConfig;
-	public static FileConfiguration grenadesConfig;
+	public static FileConfiguration explosviesConfig;
 	public static FileConfiguration generalConfig;
 
 	
 	public static void config() {
-		grenadesFile = new File(GrenadesPlus.plugin.getDataFolder(), "grenades.yml");
+		explosivesFile = new File(GrenadesPlus.plugin.getDataFolder(), "explosives.yml");
 		recipeFile = new File(GrenadesPlus.plugin.getDataFolder(), "recipes.yml");
 		generalFile = new File(GrenadesPlus.plugin.getDataFolder(), "general.yml");
 		try {
 			firstRun();
 		} catch (Exception e) {}
-		grenadesConfig = new YamlConfiguration();
+		explosviesConfig = new YamlConfiguration();
 		recipeConfig = new YamlConfiguration();
 		generalConfig = new YamlConfiguration();
 		try {
-			grenadesConfig.load(grenadesFile);
+			explosviesConfig.load(explosivesFile);
 			recipeConfig.load(recipeFile);
 			generalConfig.load(generalFile);
 		} catch (Exception e) {}
 	}
 
 	private static void firstRun() {
-		if(FileManager.create(grenadesFile))
-			FileManager.copy(GrenadesPlus.plugin.getResource("grenades.yml"), ConfigLoader.grenadesFile);
+		if(FileManager.create(explosivesFile))
+			FileManager.copy(GrenadesPlus.plugin.getResource("explosives.yml"), ConfigLoader.explosivesFile);
 		if(FileManager.create(recipeFile))
 			FileManager.copy(GrenadesPlus.plugin.getResource("recipes.yml"), ConfigLoader.recipeFile);
 		if(FileManager.create(generalFile))

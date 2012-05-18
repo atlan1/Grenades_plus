@@ -3,9 +3,9 @@ package team.GrenadesPlus;
 import org.bukkit.Location;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
+import team.GrenadesPlus.Block.Placeable;
+import team.GrenadesPlus.Item.Throwable;
 import team.GrenadesPlus.Util.Layer;
-import team.GrenadesPlus.Util.Placeable;
-import team.GrenadesPlus.Util.Throwable;
 import team.GrenadesPlus.Util.Thrower;
 
 public class GrenadesPlusPlayer implements Thrower, Layer{
@@ -25,13 +25,13 @@ public class GrenadesPlusPlayer implements Thrower, Layer{
 	}
 
 	@Override
-	public void Lay(Placeable p) {
+	public void Throw(Throwable t) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void Throw(Throwable t) {
+	public void Lay(Placeable p) {
 		// TODO Auto-generated method stub
 		
 	}

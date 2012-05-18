@@ -1,0 +1,20 @@
+# Here you can configure your own explosives!
+# Look at the examples to see how it works.
+
+Throwable:
+    Grenade:
+        texture:
+        radius:
+        sound:
+            url:
+            volume:
+        effects:
+Placeable:
+    C4:
+        texture:
+        radius:
+        sound:
+            url:
+            volume:
+        effects:
+        
