@@ -27,6 +27,38 @@ import team.GrenadesPlus.GrenadesPlus;
 
 public class Util {
 	
+	public static boolean isGrenadesPlusMaterial(String name) {
+		for (int i = 0; i < GrenadesPlus.allGrenades.size(); i++) {
+			if (GrenadesPlus.allGrenades.get(i).getName().equalsIgnoreCase(name)) {
+				return true;
+			}
+		}
+		for (int i = 0; i < GrenadesPlus.allExplosives.size(); i++) {
+			if (GrenadesPlus.allExplosives.get(i).getName().equalsIgnoreCase(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static Object getGrenadesPlusMaterial(String name) {
+		Object cm = null;
+		if(!isGrenadesPlusMaterial(name)) return cm;
+		for (int i = 0; i < GrenadesPlus.allGrenades.size(); i++) {
+			if (GrenadesPlus.allGrenades.get(i).getName().equalsIgnoreCase(name)) {
+				cm = GrenadesPlus.allGrenades.get(i);
+				return cm;
+			}
+		}
+		for (int i = 0; i < GrenadesPlus.allExplosives.size(); i++) {
+			if (GrenadesPlus.allExplosives.get(i).getName().equalsIgnoreCase(name)) {
+				cm = GrenadesPlus.allExplosives.get(i);
+				return cm;
+			}
+		}
+		return cm;
+	}
+	
 	public static boolean containsCustomItems(List<ItemStack> items){
 		for(ItemStack i : items){
 			if(isCustomItem(i)){
