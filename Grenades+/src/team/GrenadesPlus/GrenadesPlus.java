@@ -10,8 +10,10 @@ import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import team.GrenadesPlus.Item.Explosive;
+import team.GrenadesPlus.Item.Grenade;
 import team.GrenadesPlus.Manager.ConfigLoader;
-import team.GrenadesPlus.Util.VersionChecker;
+import team.GunsPlus.GunsPlus;
 
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.lwc.LWCPlugin;
@@ -23,6 +25,7 @@ public class GrenadesPlus extends JavaPlugin{
 	
 	public static GrenadesPlus plugin;
 	
+	public static GunsPlus gunsplus;
 	public static LWC lwc;
 	public static WorldGuardPlugin wg;
 	public static boolean useFurnaceAPI = false;
@@ -32,7 +35,11 @@ public class GrenadesPlus extends JavaPlugin{
 	public static boolean notifications = true;
 	public static boolean autoreload = true;
 	
+	public static List<Grenade> allGrenades = new ArrayList<Grenade>();
+	public static List<Explosive> allExplosives = new ArrayList<Explosive>();
 	public static List<Material> transparentMaterials = new ArrayList<Material>();
+	
+	public static List<GrenadesPlusPlayer> GrenadesPlusPlayers = new ArrayList<GrenadesPlusPlayer>();
 	
 	@Override
 	public void onDisable() {
@@ -44,7 +51,7 @@ public class GrenadesPlus extends JavaPlugin{
 	public void onEnable() {
 		plugin = this;
 		ConfigLoader.config();
-		new VersionChecker(this, ""); //TODO: Add rss url
+//		new VersionChecker(this, ""); TODO: Add rss url
 		getCommand("grenades+").setExecutor(new CommandEx(this));
 		getServer().getPluginManager().registerEvents(new GrenadesPlusListener(this), this);
 		
@@ -57,10 +64,12 @@ public class GrenadesPlus extends JavaPlugin{
 	
 	private void init(){
 		ConfigLoader.loadGeneral();
+		ConfigLoader.loadRecipes();
 	}
 	
 	private void hook(){
 		Plugin spout = getServer().getPluginManager().getPlugin("Spout");
+		Plugin gp = getServer().getPluginManager().getPlugin("GunsPlus");
 		Plugin lwcPlugin = getServer().getPluginManager().getPlugin("LWC");
 		Plugin furnaceAPI = getServer().getPluginManager().getPlugin("FurnaceAPI");
 		Plugin worldguard = getServer().getPluginManager().getPlugin("WorldGuardPlugin");
@@ -69,6 +78,10 @@ public class GrenadesPlus extends JavaPlugin{
 		}else{
 			log.log(Level.INFO, PRE+" disableing because Spout is missing!");
 			this.setEnabled(false);
+		}
+		if(gp != null) {
+			gunsplus = (GunsPlus) gp;
+			log.log(Level.INFO, PRE+" Plugged into Guns+!");
 		}
 		if(lwcPlugin != null) {
 			lwc = ((LWCPlugin) lwcPlugin).getLWC();

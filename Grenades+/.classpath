@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/Plugins Test Server/plugins/LWC.jar"/>
 	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/Plugins Test Server/plugins/WorldEdit/WorldGuard.jar"/>
 	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/Plugins Test Server/plugins/FurnaceAPI.jar"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/Plugins Test Server/plugins/GunsPlus.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
