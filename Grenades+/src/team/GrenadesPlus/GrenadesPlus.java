@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import team.GrenadesPlus.Item.Explosive;
+import team.GrenadesPlus.Block.Explosive;
 import team.GrenadesPlus.Item.Grenade;
 import team.GrenadesPlus.Manager.ConfigLoader;
 import team.GunsPlus.GunsPlus;

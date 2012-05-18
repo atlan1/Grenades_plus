@@ -1,4 +1,4 @@
-package team.GrenadesPlus.Item;
+package team.GrenadesPlus.Util;
 
 public interface Placeable {
 

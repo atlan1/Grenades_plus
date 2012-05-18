@@ -4,7 +4,7 @@ import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 
 import team.GrenadesPlus.GrenadesPlus;
-import team.GrenadesPlus.Item.Explosive;
+import team.GrenadesPlus.Block.Explosive;
 import team.GrenadesPlus.Item.Grenade;
 
 public class GrenadesUtils {

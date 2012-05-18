@@ -1,8 +1,10 @@
-package team.GrenadesPlus.Item;
+package team.GrenadesPlus.Block;
 
 import org.bukkit.plugin.Plugin;
 import org.getspout.spoutapi.block.design.BlockDesign;
 import org.getspout.spoutapi.material.block.GenericCustomBlock;
+
+import team.GrenadesPlus.Util.Placeable;
 
 
 public class Explosive extends GenericCustomBlock implements Placeable{

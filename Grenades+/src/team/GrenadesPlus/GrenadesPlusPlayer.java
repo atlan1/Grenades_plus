@@ -3,9 +3,9 @@ package team.GrenadesPlus;
 import org.bukkit.Location;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
-import team.GrenadesPlus.Item.Placeable;
-import team.GrenadesPlus.Item.Throwable;
 import team.GrenadesPlus.Util.Layer;
+import team.GrenadesPlus.Util.Placeable;
+import team.GrenadesPlus.Util.Throwable;
 import team.GrenadesPlus.Util.Thrower;
 
 public class GrenadesPlusPlayer implements Thrower, Layer{
