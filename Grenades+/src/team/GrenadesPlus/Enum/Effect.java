@@ -1,29 +1,20 @@
 package team.GrenadesPlus.Enum;
 
 import java.util.HashMap;
+import java.util.Map;
+
+import team.GrenadesPlus.Util.PropertyHolder;
 
 
-public class Effect {
+public class Effect implements PropertyHolder{
 
 	private EffectType effecttype;
 	private EffectSection effectsection;
-	private HashMap<String, Object> arguments = new HashMap<String, Object>();
+	private HashMap<String, Object> properties = new HashMap<String, Object>();
 	
 	public Effect(EffectType et, EffectSection es){
 		setEffecttype(et);
 		setEffectsection(es);
-	}
-	
-	public HashMap<String, Object> getArguments() {
-		return arguments;
-	}
-	
-	public Object getArgument(String id){
-		return this.arguments.containsKey(id)?this.arguments.get(id):null;
-	}
-
-	public void addArgument(String id, Object argument) {
-		this.arguments.put(id, argument);
 	}
 
 	public EffectSection getEffectsection() {
@@ -40,5 +31,38 @@ public class Effect {
 
 	public void setEffecttype(EffectType effecttype) {
 		this.effecttype = effecttype;
+	}
+	
+	@Override
+	public Object getProperty(String id) {
+		return properties.get(id);
+	}
+
+	@Override
+	public void addProperty(String id, Object property) {
+		if(!properties.containsKey(id))
+			properties.put(id, property);
+	}
+
+	@Override
+	public Map<String, Object> getProperties() {
+		return properties;
+	}
+
+	@Override
+	public void setProperties(Map<String, Object> properties) {
+		properties = new HashMap<String, Object>(properties);
+	}
+
+	@Override
+	public void removeProperty(String id) {
+		if(properties.containsKey(id))
+			properties.remove(id);
+	}
+
+	@Override
+	public void editProperty(String id, Object property) {
+		if(properties.containsKey(id))
+			properties.put(id, property);
 	}
 }

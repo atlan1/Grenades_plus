@@ -3,26 +3,43 @@ package team.GrenadesPlus.Enum;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum EffectSection {
+import team.GrenadesPlus.Util.PropertyHolder;
+
+public enum EffectSection implements PropertyHolder{
 	EXPLOSIVELOCATION(), TARGETENTITIES(), TARGETLOCATIONS(), THROWER(), LAYER(), FLIGHTPATH(), UNDEFINED();
 	
-	private Map<String, Object> data = new HashMap<String, Object>();
+	private Map<String, Object> properties = new HashMap<String, Object>();
 	
-	public Map<String, Object> getData(){
-		return data;
+	@Override
+	public Object getProperty(String id) {
+		return properties.get(id);
 	}
-	
-	public void setData(Map<String, Object>data){
-		this.data = data;
+
+	@Override
+	public void addProperty(String id, Object property) {
+		if(!properties.containsKey(id))
+			properties.put(id, property);
 	}
-	
-	public void addData(String name, Object data){
-		this.data.put(name, data);
+
+	@Override
+	public Map<String, Object> getProperties() {
+		return properties;
 	}
-	
-	public void removeData(String name){
-		if(this.data.containsKey(name)) { 
-			this.data.remove(name);
-		}
+
+	@Override
+	public void setProperties(Map<String, Object> properties) {
+		properties = new HashMap<String, Object>(properties);
+	}
+
+	@Override
+	public void removeProperty(String id) {
+		if(properties.containsKey(id))
+			properties.remove(id);
+	}
+
+	@Override
+	public void editProperty(String id, Object property) {
+		if(properties.containsKey(id))
+			properties.put(id, property);
 	}
 }
