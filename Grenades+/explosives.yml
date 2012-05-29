@@ -4,17 +4,18 @@
 Throwable:
     Grenade:
         texture:
-        radius:
         sound:
             url:
             volume:
+        triggers:
         effects:
 Placeable:
     C4:
         texture:
-        radius:
+        design:
         sound:
             url:
             volume:
+        triggers:
         effects:
         

@@ -11,4 +11,9 @@ loaded-placeables: true
 show-debug: false
 show-warnings: true
 
+# Here you can add a default key/button to throw a grenade
+# Available: right, left, middle, all characters, numbers and keys on your keyboard
+# Optional you put a _ behind to specify that the grenade will be thrown on key release. 
+throw: right_
+
 transparent-materials: 0, 6, 83, 107, 68, 50, 18, 31, 8, 9, 10, 11, 101, 77, 113, 85, 75, 76, 90, 55, 30, 106, 111, 37, 38, 39, 40, 51, 59, 65
