@@ -24,6 +24,8 @@ import org.getspout.spoutapi.sound.SoundManager;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
 import team.GrenadesPlus.GrenadesPlus;
+import team.GrenadesPlus.Enum.EffectSection;
+import team.GrenadesPlus.Enum.EffectType;
 
 public class Util {
 	
@@ -254,5 +256,39 @@ public class Util {
 				return true;
 		} else
 			return true;
+	}
+
+	public static boolean isAllowedInEffectSection(EffectType efftyp, EffectSection effsec) {
+		switch(effsec){
+			case EXPLOSIVELOCATION:
+				switch(efftyp){
+					case POTION:
+						return false;
+					default:
+						return true;
+				}
+			case TARGETENTITIES:
+				return true;
+			case TARGETLOCATIONS:
+				switch(efftyp){
+					case POTION:
+						return false;
+					default:
+						return true;
+				}
+			case THROWER:
+				return true;
+			case LAYER:
+				return true;
+			case FLIGHTPATH:
+				switch(efftyp){
+					case POTION:
+						return false;
+					default:
+						return true;
+				}
+		}
+		
+		return false;
 	}
 }

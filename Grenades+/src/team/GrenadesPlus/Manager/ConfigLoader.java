@@ -11,6 +11,8 @@ import org.getspout.spoutapi.material.CustomBlock;
 import org.getspout.spoutapi.material.CustomItem;
 
 import team.GrenadesPlus.GrenadesPlus;
+import team.GrenadesPlus.Enum.Effect;
+import team.GrenadesPlus.Enum.Trigger;
 import team.GrenadesPlus.Util.Util;
 
 public class ConfigLoader {
@@ -19,7 +21,7 @@ public class ConfigLoader {
 	public static File explosivesFile;
 	public static File recipeFile;
 	public static FileConfiguration recipeConfig;
-	public static FileConfiguration explosviesConfig;
+	public static FileConfiguration explosivesConfig;
 	public static FileConfiguration generalConfig;
 
 	
@@ -30,11 +32,11 @@ public class ConfigLoader {
 		try {
 			firstRun();
 		} catch (Exception e) {}
-		explosviesConfig = new YamlConfiguration();
+		explosivesConfig = new YamlConfiguration();
 		recipeConfig = new YamlConfiguration();
 		generalConfig = new YamlConfiguration();
 		try {
-			explosviesConfig.load(explosivesFile);
+			explosivesConfig.load(explosivesFile);
 			recipeConfig.load(recipeFile);
 			generalConfig.load(generalFile);
 		} catch (Exception e) {}
@@ -82,6 +84,26 @@ public class ConfigLoader {
 				Util.debug(e);
 			}
 		}
+	}
+	
+	public static void loadThrowables(){
+		Object[] keys = explosivesConfig.getKeys(false).toArray();
+		for(Object key : keys){
+			try{
+				String name = key.toString();
+				String texture = explosivesConfig.getString(key+".texture");
+				String sound = explosivesConfig.getString(key+".sound.url");
+				int soundvolume = explosivesConfig.getInt(key+".sound.volume");
+				List<Trigger> triggers = ConfigParser.parseTriggers(key.toString());
+				List<Effect> effects = ConfigParser.parseEffects(key.toString());
+				
+				MaterialManager.buildNewThrowable(GrenadesPlus.plugin, name, texture);
+				
+			}catch (Exception e) {
+				Util.warn("Config Error:" + e.getMessage());
+				Util.debug(e);
+			}
+			}
 	}
 
 	public static void loadGeneral() {

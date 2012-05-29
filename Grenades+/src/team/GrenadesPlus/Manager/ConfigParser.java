@@ -1,10 +1,24 @@
 package team.GrenadesPlus.Manager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
+
+import team.GrenadesPlus.Block.Placeable;
+import team.GrenadesPlus.Enum.Effect;
+import team.GrenadesPlus.Enum.EffectSection;
+import team.GrenadesPlus.Enum.EffectType;
+import team.GrenadesPlus.Enum.Trigger;
+import team.GrenadesPlus.Item.Throwable;
+import team.GrenadesPlus.Util.Util;
+import team.GrenadesPlus.GrenadesPlus;
 
 public class ConfigParser {
 
@@ -37,21 +51,29 @@ public class ConfigParser {
     }
     
     private static ItemStack singleItem(String item){
-//    	SpoutItemStack custom = null;
+    	SpoutItemStack custom = null;
         Material m = getMaterial(item);
-//        if(m==null){
-//			TODO: Add custom item support
-//        }
-//        if(custom==null){
+        if(m==null){
+        	for(Throwable a: GrenadesPlus.allThrowables){
+				if(a.getName().toString().equals(item)){
+					custom = new SpoutItemStack(a);
+				}
+			}
+        	for(Placeable a: GrenadesPlus.allPlaceables){
+				if(a.getName().toString().equals(item)){
+					custom = new SpoutItemStack(a);
+				}
+			}
+        }
+        if(custom==null){
         	if(m==null){
         		return null;
         	}else{
         		return new ItemStack(m);
         	}
-//        }
-//        }else{
-//        	return new SpoutItemStack(custom);
-//        }
+        }else{
+        	return new SpoutItemStack(custom);
+        }
     }
     
     private static ItemStack withDurability(String item, String durab){
@@ -83,5 +105,86 @@ public class ConfigParser {
             return Material.getMaterial(Integer.parseInt(item));
         
         return Material.getMaterial(item.toUpperCase());
+    }
+    
+    public static List<Trigger> parseTriggers(String key){
+    	return null;
+    }
+    
+    public static List<Effect> parseEffects(String path){
+    	List<Effect> effects = new ArrayList<Effect>();
+    	if(!ConfigLoader.explosivesConfig.isConfigurationSection(path)||ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false).isEmpty()) return effects;
+    	for(String effectsection: ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false)){
+    		EffectSection effsec = EffectSection.valueOf(effectsection.toUpperCase());
+    		setSectionArguments(path+"."+effectsection, effsec);
+    		for(String effecttype : ConfigLoader.explosivesConfig.getConfigurationSection(path+"."+effectsection).getKeys(false)){
+    			if(effecttype.toUpperCase().equalsIgnoreCase("arguments")) continue;
+    			EffectType efftyp = EffectType.valueOf(effecttype.toUpperCase());
+    			if(Util.isAllowedInEffectSection(efftyp, effsec)){
+    				effects.add(buildEffect(efftyp, effsec, path+"."+effectsection+"."+effecttype));
+    			}
+    		}
+    	}
+    	return effects;
+    }
+    
+    private static void setSectionArguments(String path ,EffectSection e){
+    	Map<String, Object> map = new HashMap<String, Object>();
+    	ConfigurationSection cs = ConfigLoader.explosivesConfig.getConfigurationSection(path+".arguments");
+    	if(cs==null) return;
+    	switch(e) {
+    		case FLIGHTPATH:
+    			if(cs.getInt("length")!=0)
+    				map.put("LENGTH", (Integer)cs.getInt("length"));
+    			else return;
+    			break;
+    		default:
+    			if(cs.getInt("radius")!=0)
+    				map.put("RADIUS", (Integer)cs.getInt("radius"));
+    			else return;
+    			break;
+    	}
+    	e.setProperties(map);
+    }
+    
+    private static Effect buildEffect(EffectType efftyp, EffectSection es, String path){
+    		Effect e = new Effect(efftyp, es);
+    		switch(efftyp){
+		    	case EXPLOSION:
+		    		e.addProperty("SIZE", ConfigLoader.explosivesConfig.getInt(path+".size"));
+		    		break;
+		    	case LIGHTNING:
+		    		break;
+		    	case SMOKE:
+		    		e.addProperty("DENSITY", ConfigLoader.explosivesConfig.getInt(path+".density"));
+		    		break;
+		    	case FIRE:
+		    		if(es.equals(EffectSection.TARGETENTITIES)||es.equals(EffectSection.THROWER)||es.equals(EffectSection.LAYER))
+		    			e.addProperty("DURATION", ConfigLoader.explosivesConfig.getInt(path+".duration"));
+		    		else
+		    			e.addProperty("STRENGTH", ConfigLoader.explosivesConfig.getInt(path+".strength"));
+		    		break;
+		    	case PUSH:
+		    		e.addProperty("SPEED", ConfigLoader.explosivesConfig.getDouble(path+".speed"));
+		    		break;
+		    	case DRAW:
+		    		e.addProperty("SPEED", ConfigLoader.explosivesConfig.getDouble(path+".speed"));
+		    		break;
+		    	case POTION:
+		    		e.addProperty("ID", ConfigLoader.explosivesConfig.getInt(path+".id"));
+		    		e.addProperty("DURATION", ConfigLoader.explosivesConfig.getInt(path+".duration"));
+		    		e.addProperty("STRENGTH", ConfigLoader.explosivesConfig.getInt(path+".strength"));
+		    		break;
+		    	case SPAWN:
+		    		e.addProperty("ENTITY", ConfigLoader.explosivesConfig.getString(path+".entity"));
+		    		break;
+		    	case PLACE:
+		    		e.addProperty("BLOCK", ConfigLoader.explosivesConfig.getString(path+".block"));
+		    		break;
+		    	case BREAK:
+		    		e.addProperty("POTENCY", ConfigLoader.explosivesConfig.getDouble(path+".potency"));
+		    		break;
+    	}
+    	return e;
     }
 }
