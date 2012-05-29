@@ -14,6 +14,7 @@ import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.Enum.Effect;
 import team.GrenadesPlus.Enum.Trigger;
 import team.GrenadesPlus.Util.Util;
+import team.GrenadesPlus.Item.Throwable;
 
 public class ConfigLoader {
 	
@@ -87,23 +88,39 @@ public class ConfigLoader {
 	}
 	
 	public static void loadThrowables(){
-		Object[] keys = explosivesConfig.getKeys(false).toArray();
+		if(explosivesConfig.getConfigurationSection("Throwable")==null)
+			return;
+		Object[] keys = explosivesConfig.getConfigurationSection("throwables").getKeys(false).toArray();
 		for(Object key : keys){
 			try{
+				YamlConfiguration defaultConfig = new YamlConfiguration();
+				defaultConfig.load(GrenadesPlus.plugin.getResource("explosives.yml"));
+				for(String node : defaultConfig.getConfigurationSection("Grenade").getKeys(false)){
+					if(explosivesConfig.get("Throwable."+key+"."+node)==null){
+						Util.warn( "The node '"+node+"' in the throwable explosive "+key+" is missing or invalid!");
+					}
+				}
+				
 				String name = key.toString();
 				String texture = explosivesConfig.getString(key+".texture");
 				String sound = explosivesConfig.getString(key+".sound.url");
 				int soundvolume = explosivesConfig.getInt(key+".sound.volume");
-				List<Trigger> triggers = ConfigParser.parseTriggers(key.toString());
-				List<Effect> effects = ConfigParser.parseEffects(key.toString());
+				float speed = explosivesConfig.getInt(key+".speed");
+				List<Trigger> triggers = ConfigParser.parseTriggers("Throwable"+key.toString()+".triggers");
+				List<Effect> effects = ConfigParser.parseEffects("Throwable."+key.toString()+".effects");
 				
-				MaterialManager.buildNewThrowable(GrenadesPlus.plugin, name, texture);
+				Throwable t = MaterialManager.buildNewThrowable(GrenadesPlus.plugin, name, texture);
+				t.addProperty("SOUNDURL", sound);
+				t.addProperty("SOUNDVOLUME", soundvolume);
+				t.addProperty("SPEED", speed);
+				t.addProperty("TRIGGERS", triggers);
+				t.setEffects(effects);
 				
 			}catch (Exception e) {
 				Util.warn("Config Error:" + e.getMessage());
 				Util.debug(e);
 			}
-			}
+		}
 	}
 
 	public static void loadGeneral() {

@@ -23,6 +23,34 @@ public enum Trigger implements PropertyHolder{
 		usage = b;
 	}
 	
+	public static Trigger ONHIT(){
+		Trigger t = Trigger.ONHIT;
+		return t;
+	}
+	
+	public static Trigger DETONATOR(){
+		Trigger t = Trigger.DETONATOR;
+		return t;
+	}
+	
+	public static Trigger SHOCK(int radius){
+		Trigger t = Trigger.SHOCK;
+		t.addProperty("RADIUS", radius);
+		return t;
+	}
+	
+	public static Trigger TIME(int time){
+		Trigger t = Trigger.TIME;
+		t.addProperty("TIME", t);
+		return t;
+	}
+	
+	public static Trigger REDSTONE(boolean active){
+		Trigger t = Trigger.REDSTONE;
+		t.addProperty("ACTIVE", active);
+		return t;
+	}
+	
 	private boolean getUsage(){
 		return usage;
 	}
@@ -40,19 +68,19 @@ public enum Trigger implements PropertyHolder{
 		}
 	}
 	
-	public boolean isThrowableTrigger(Trigger t){
+	public static boolean isThrowableTrigger(Trigger t){
 		return throwableTriggers.contains(t);
 	}
 	
-	public boolean isPlaceableTrigger(Trigger t){
+	public static boolean isPlaceableTrigger(Trigger t){
 		return placeableTriggers.contains(t);
 	}
 	
-	public List<Trigger> getThrowableTriggers(){
+	public static List<Trigger> getThrowableTriggers(){
 		return throwableTriggers;
 	}
 	
-	public List<Trigger> getPlaceableTriggers(){
+	public static List<Trigger> getPlaceableTriggers(){
 		return placeableTriggers;
 	}
 	

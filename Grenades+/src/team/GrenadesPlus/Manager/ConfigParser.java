@@ -107,8 +107,41 @@ public class ConfigParser {
         return Material.getMaterial(item.toUpperCase());
     }
     
-    public static List<Trigger> parseTriggers(String key){
-    	return null;
+    public static List<Trigger> parseTriggers(String path){
+    	List<Trigger> triggers = new ArrayList<Trigger>();
+    	boolean throwable = false;
+    	if(path.split(".")[0].equalsIgnoreCase("throwable"))
+    		throwable = true;
+    	if(!ConfigLoader.explosivesConfig.isConfigurationSection(path)||ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false).isEmpty()) return triggers;
+    	for(String node: ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false)){
+    		Trigger t = Trigger.valueOf(node.toUpperCase());
+    		if(throwable){
+    			if(!Trigger.isThrowableTrigger(t))
+    				continue;
+    		}else{
+    			if(!Trigger.isPlaceableTrigger(t))
+    				continue;
+    		}
+    		switch(t){
+	    		case ONHIT:
+	    			t = Trigger.ONHIT();
+	    			break;
+	    		case TIME:
+	    			t = Trigger.TIME(ConfigLoader.explosivesConfig.getInt(path+"."+node));
+	    			break;
+	    		case DETONATOR:
+	    			t = Trigger.DETONATOR();
+	    			break;
+	    		case REDSTONE:
+	    			t = Trigger.REDSTONE(ConfigLoader.explosivesConfig.getBoolean(path+"."+node));
+	    			break;
+	    		case SHOCK:
+	    			t = Trigger.SHOCK(ConfigLoader.explosivesConfig.getInt(path+"."+node));
+	    			break;
+    		}
+    		triggers.add(t);
+    	}
+    	return triggers;
     }
     
     public static List<Effect> parseEffects(String path){
