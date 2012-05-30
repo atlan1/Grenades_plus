@@ -7,9 +7,9 @@ Grenade:
     # this is the amount of grenades in the output 
     amount: 1
     # the ingredients from the right to the left and from the first to the last row in the crafting grid 
-    ingredients: 20, 20, 0, 265, 265, 265, 5, 280, 0
-SmokeGrenade:
+    ingredients: flint, flint, flint, flint, tnt, flint, flint, flint, flint
+C4:
     type: 'shapeless'
     amount: 8
     # the ingredients you have to put in the grid to get ammo
-    ingredients: 289, 265
+    ingredients: stone, tnt

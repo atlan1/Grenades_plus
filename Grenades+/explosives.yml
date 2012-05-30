@@ -3,19 +3,28 @@
 
 Throwable:
     Grenade:
-        texture:
+        texture: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Textures/itemGrenade.png'
         sound:
-            url:
-            volume:
+            url: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Sounds/stungrenade.ogg'
+            volume: 100
+        speed: 1.4
         triggers:
         effects:
 Placeable:
     C4:
-        texture:
         design:
+            type: cube
+            attach-to-walls: true
+            texture:
+                url: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Textures/C4.png'
+                width: 16
+                height: 16
+                sprite: 16
+                used-ids: 0, 0, 0, 0, 0, 0
+        hardness: 20
         sound:
-            url:
-            volume:
+            url: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Sounds/c4_explode1.wav'
+            volume: 100
         triggers:
         effects:
         
