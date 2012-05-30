@@ -20,9 +20,11 @@ public class Placeable extends GenericCustomBlock implements EffectHolder, Prope
 	private List<Effect> effects = new ArrayList<Effect>();
 	private Map<String, Object> properties = new HashMap<String, Object>();
 	
-	public Placeable(Plugin plugin, String name, int blockId, int metadata,
-			BlockDesign design) {
+	public Placeable(Plugin plugin, String name, int blockId, int metadata, BlockDesign design, int hardness) {
 		super(plugin, name, blockId, metadata, design);
+		this.setRotate(true);
+		this.setHardness(hardness);
+		this.setOpaque(false);
 	}
 	
 	@Override
