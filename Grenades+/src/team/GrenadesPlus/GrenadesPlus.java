@@ -9,8 +9,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.getspout.spoutapi.block.design.Texture;
 
 import team.GrenadesPlus.Block.Placeable;
+import team.GrenadesPlus.Enum.KeyType;
 import team.GrenadesPlus.Item.Throwable;
 import team.GrenadesPlus.Manager.ConfigLoader;
 import team.GunsPlus.GunsPlus;
@@ -20,7 +22,7 @@ import com.griefcraft.lwc.LWCPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 public class GrenadesPlus extends JavaPlugin{
-	public static final String PRE = " [Grenades+]";
+	public static final String PRE = "[Grenades+] ";
 	public static final Logger log = Bukkit.getLogger();
 	
 	public static GrenadesPlus plugin;
@@ -34,10 +36,13 @@ public class GrenadesPlus extends JavaPlugin{
 	public static boolean debug = false;
 	public static boolean notifications = true;
 	public static boolean autoreload = true;
+	public static KeyType throwType = new KeyType("G", true);
 	
 	public static List<Throwable> allThrowables = new ArrayList<Throwable>();
 	public static List<Placeable> allPlaceables = new ArrayList<Placeable>();
 	public static List<Material> transparentMaterials = new ArrayList<Material>();
+	
+	public static List<Texture> loadedBlockTextures = new ArrayList<Texture>();
 	
 	public static List<GrenadesPlusPlayer> GrenadesPlusPlayers = new ArrayList<GrenadesPlusPlayer>();
 	
@@ -52,11 +57,13 @@ public class GrenadesPlus extends JavaPlugin{
 		plugin = this;
 		ConfigLoader.config();
 //		new VersionChecker(this, ""); TODO: Add rss url
-		getCommand("grenades+").setExecutor(new CommandEx(this));
-		getServer().getPluginManager().registerEvents(new GrenadesPlusListener(this), this);
 		
 		hook();
 		init();
+		
+		getCommand("grenades+").setExecutor(new CommandEx(this));
+		getServer().getPluginManager().registerEvents(new GrenadesPlusListener(this), this);
+		new ThrowBinding(this, throwType);
 		
 		log.log(Level.INFO, PRE + " version " + getDescription().getVersion()
 				+ " is now enabled.");
@@ -64,6 +71,8 @@ public class GrenadesPlus extends JavaPlugin{
 	
 	private void init(){
 		ConfigLoader.loadGeneral();
+		ConfigLoader.loadThrowables();
+		ConfigLoader.loadPlaceables();
 		ConfigLoader.loadRecipes();
 	}
 	
