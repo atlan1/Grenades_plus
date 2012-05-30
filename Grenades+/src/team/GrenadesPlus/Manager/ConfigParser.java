@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 
@@ -15,6 +16,7 @@ import team.GrenadesPlus.Block.Placeable;
 import team.GrenadesPlus.Enum.Effect;
 import team.GrenadesPlus.Enum.EffectSection;
 import team.GrenadesPlus.Enum.EffectType;
+import team.GrenadesPlus.Enum.KeyType;
 import team.GrenadesPlus.Enum.Trigger;
 import team.GrenadesPlus.Item.Throwable;
 import team.GrenadesPlus.Util.Util;
@@ -107,10 +109,32 @@ public class ConfigParser {
         return Material.getMaterial(item.toUpperCase());
     }
     
+    public static KeyType parseKeyType(String string) throws Exception{
+    	boolean hold = false;
+    	String keyname = "";
+    	if(string.endsWith("_")){
+    		hold = true;
+    		string = string.replace("_", "");
+    	}
+    	if(string.matches("[0-9a-zA-Z]*")){
+    		keyname = string;
+    	}else throw new Exception(" Key contains invalid characters: "+ string);
+    	return new KeyType(keyname, hold);
+    }
+    
+    public static int[] parseIntArray(FileConfiguration f, String node){
+    	String[] s = f.getString(node, "0").split(",");
+    	int[] ia = new int[s.length];
+    	for(int i=0;i<ia.length;i++){
+    		ia[i] = Integer.parseInt(s[i].trim());
+    	}
+    	return ia;
+    }
+    
     public static List<Trigger> parseTriggers(String path){
     	List<Trigger> triggers = new ArrayList<Trigger>();
     	boolean throwable = false;
-    	if(path.split(".")[0].equalsIgnoreCase("throwable"))
+    	if(path.startsWith("Throwable"))
     		throwable = true;
     	if(!ConfigLoader.explosivesConfig.isConfigurationSection(path)||ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false).isEmpty()) return triggers;
     	for(String node: ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false)){
