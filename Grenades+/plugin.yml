@@ -2,6 +2,7 @@ name: GrenadesPlus
 main: team.GrenadesPlus.GrenadesPlus
 version: 1.0
 depend: [Spout]
+soft-depend: [ApiPlus]
 authors: [SirTyler, Atlan1]
 description: >
              Grenades+ - Grenades - make creepers go boom!

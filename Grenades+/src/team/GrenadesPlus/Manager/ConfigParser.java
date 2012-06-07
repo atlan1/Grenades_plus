@@ -13,9 +13,9 @@ import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 
 import team.GrenadesPlus.Block.Placeable;
-import team.GrenadesPlus.Enum.Effect;
-import team.GrenadesPlus.Enum.EffectSection;
-import team.GrenadesPlus.Enum.EffectType;
+import team.GrenadesPlus.Enum.ExplosiveEffect;
+import team.GrenadesPlus.Enum.ExplosiveEffectSection;
+import team.GrenadesPlus.Enum.ExplosiveEffectType;
 import team.GrenadesPlus.Enum.KeyType;
 import team.GrenadesPlus.Enum.Trigger;
 import team.GrenadesPlus.Item.Throwable;
@@ -168,15 +168,15 @@ public class ConfigParser {
     	return triggers;
     }
     
-    public static List<Effect> parseEffects(String path){
-    	List<Effect> effects = new ArrayList<Effect>();
+    public static List<ExplosiveEffect> parseEffects(String path){
+    	List<ExplosiveEffect> effects = new ArrayList<ExplosiveEffect>();
     	if(!ConfigLoader.explosivesConfig.isConfigurationSection(path)||ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false).isEmpty()) return effects;
     	for(String effectsection: ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false)){
-    		EffectSection effsec = EffectSection.valueOf(effectsection.toUpperCase());
+    		ExplosiveEffectSection effsec = ExplosiveEffectSection.valueOf(effectsection.toUpperCase());
     		setSectionArguments(path+"."+effectsection, effsec);
     		for(String effecttype : ConfigLoader.explosivesConfig.getConfigurationSection(path+"."+effectsection).getKeys(false)){
     			if(effecttype.toUpperCase().equalsIgnoreCase("arguments")) continue;
-    			EffectType efftyp = EffectType.valueOf(effecttype.toUpperCase());
+    			ExplosiveEffectType efftyp = ExplosiveEffectType.valueOf(effecttype.toUpperCase());
     			if(Util.isAllowedInEffectSection(efftyp, effsec)){
     				effects.add(buildEffect(efftyp, effsec, path+"."+effectsection+"."+effecttype));
     			}
@@ -185,7 +185,7 @@ public class ConfigParser {
     	return effects;
     }
     
-    private static void setSectionArguments(String path ,EffectSection e){
+    private static void setSectionArguments(String path ,ExplosiveEffectSection e){
     	Map<String, Object> map = new HashMap<String, Object>();
     	ConfigurationSection cs = ConfigLoader.explosivesConfig.getConfigurationSection(path+".arguments");
     	if(cs==null) return;
@@ -204,8 +204,8 @@ public class ConfigParser {
     	e.setProperties(map);
     }
     
-    private static Effect buildEffect(EffectType efftyp, EffectSection es, String path){
-    		Effect e = new Effect(efftyp, es);
+    private static ExplosiveEffect buildEffect(ExplosiveEffectType efftyp, ExplosiveEffectSection es, String path){
+    		ExplosiveEffect e = new ExplosiveEffect(efftyp, es);
     		switch(efftyp){
 		    	case EXPLOSION:
 		    		e.addProperty("SIZE", ConfigLoader.explosivesConfig.getInt(path+".size"));
@@ -216,7 +216,7 @@ public class ConfigParser {
 		    		e.addProperty("DENSITY", ConfigLoader.explosivesConfig.getInt(path+".density"));
 		    		break;
 		    	case FIRE:
-		    		if(es.equals(EffectSection.TARGETENTITIES)||es.equals(EffectSection.THROWER)||es.equals(EffectSection.LAYER))
+		    		if(es.equals(ExplosiveEffectSection.TARGETENTITIES)||es.equals(ExplosiveEffectSection.THROWER)||es.equals(ExplosiveEffectSection.LAYER))
 		    			e.addProperty("DURATION", ConfigLoader.explosivesConfig.getInt(path+".duration"));
 		    		else
 		    			e.addProperty("STRENGTH", ConfigLoader.explosivesConfig.getInt(path+".strength"));

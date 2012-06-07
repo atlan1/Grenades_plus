@@ -3,9 +3,9 @@ package team.GrenadesPlus.Enum;
 import java.util.HashMap;
 import java.util.Map;
 
-import team.GrenadesPlus.Util.PropertyHolder;
+import team.ApiPlus.API.Effect.EffectSection;
 
-public enum EffectSection implements PropertyHolder{
+public enum ExplosiveEffectSection implements EffectSection{
 	EXPLOSIVELOCATION(), TARGETENTITIES(), TARGETLOCATIONS(), THROWER(), LAYER(), FLIGHTPATH(), UNDEFINED();
 	
 	private Map<String, Object> properties = new HashMap<String, Object>();

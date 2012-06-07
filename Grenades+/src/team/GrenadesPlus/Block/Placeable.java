@@ -1,23 +1,20 @@
 package team.GrenadesPlus.Block;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.Plugin;
 import org.getspout.spoutapi.block.design.BlockDesign;
 import org.getspout.spoutapi.material.block.GenericCustomBlock;
 
-import team.GrenadesPlus.Enum.Effect;
-import team.GrenadesPlus.Util.EffectHolder;
-import team.GrenadesPlus.Util.PropertyHolder;
+import team.ApiPlus.API.Effect.Effect;
+import team.ApiPlus.API.Effect.EffectHolder;
+import team.ApiPlus.API.PropertyHolder;
 
 public class Placeable extends GenericCustomBlock implements EffectHolder, PropertyHolder{
 
-	private List<Effect> effects = new ArrayList<Effect>();
 	private Map<String, Object> properties = new HashMap<String, Object>();
 	
 	public Placeable(Plugin plugin, String name, int blockId, int metadata, BlockDesign design, int hardness) {
@@ -37,14 +34,16 @@ public class Placeable extends GenericCustomBlock implements EffectHolder, Prope
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Effect> getEffects() {
-		return effects;
+		return (List<Effect>) getProperty("EFFECTS");
 	}
 	
 	@Override
 	public void setEffects(List<Effect> eff){
-		effects = eff;
+		editProperty("EFFECTS", eff);
+		addProperty("EFFECTS", eff);
 	}
 
 	@Override

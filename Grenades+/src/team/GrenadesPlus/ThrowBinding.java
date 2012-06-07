@@ -1,8 +1,5 @@
 package team.GrenadesPlus;
 
-import net.minecraft.server.Packet18ArmAnimation;
-
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.event.input.KeyBindingEvent;
 import org.getspout.spoutapi.gui.ScreenType;
@@ -28,10 +25,8 @@ public class ThrowBinding implements BindingExecutionDelegate{
 	public void keyPressed(KeyBindingEvent e) {
 		if(e.getScreenType().equals(ScreenType.GAME_SCREEN)){
 			GrenadesPlusPlayer gpp = PlayerUtils.getPlayerBySpoutPlayer(e.getPlayer());
-			Packet18ArmAnimation pa = new Packet18ArmAnimation();
-			CraftPlayer cp = (CraftPlayer) gpp.getPlayer();
-			cp.getHandle().netServerHandler.sendPacket(pa);
 			if(ExplosiveUtils.isThrowable(gpp.getPlayer().getItemInHand())&&!keytype.isHoldKey()){
+				PlayerUtils.playArmAnimation(e.getPlayer());
 				gpp.Throw(ExplosiveUtils.getThrowable(gpp.getPlayer().getItemInHand()));
 			}
 		}
@@ -42,6 +37,7 @@ public class ThrowBinding implements BindingExecutionDelegate{
 		if(e.getScreenType().equals(ScreenType.GAME_SCREEN)){
 			GrenadesPlusPlayer gpp = PlayerUtils.getPlayerBySpoutPlayer(e.getPlayer());
 			if(ExplosiveUtils.isThrowable(gpp.getPlayer().getItemInHand())&&keytype.isHoldKey()){
+				PlayerUtils.playArmAnimation(e.getPlayer());
 				gpp.Throw(ExplosiveUtils.getThrowable(gpp.getPlayer().getItemInHand()));
 			}
 		}

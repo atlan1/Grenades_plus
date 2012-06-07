@@ -3,34 +3,35 @@ package team.GrenadesPlus.Enum;
 import java.util.HashMap;
 import java.util.Map;
 
-import team.GrenadesPlus.Util.PropertyHolder;
+import team.ApiPlus.API.Effect.Effect;
+import team.ApiPlus.API.Effect.EffectSection;
+import team.ApiPlus.API.Effect.EffectType;
 
+public class ExplosiveEffect implements Effect{
 
-public class Effect implements PropertyHolder{
-
-	private EffectType effecttype;
-	private EffectSection effectsection;
+	private ExplosiveEffectType effecttype;
+	private ExplosiveEffectSection effectsection;
 	private HashMap<String, Object> properties = new HashMap<String, Object>();
 	
-	public Effect(EffectType et, EffectSection es){
-		setEffecttype(et);
-		setEffectsection(es);
+	public ExplosiveEffect(ExplosiveEffectType et, ExplosiveEffectSection es){
+		setEffectType(et);
+		setEffectSection(es);
 	}
 
-	public EffectSection getEffectsection() {
+	public ExplosiveEffectSection getEffectSection() {
 		return effectsection;
 	}
 
-	public void setEffectsection(EffectSection effectsection) {
-		this.effectsection = effectsection;
+	public void setEffectSection(EffectSection effectsection) {
+		this.effectsection = (ExplosiveEffectSection) effectsection;
 	}
 
-	public EffectType getEffecttype() {
+	public ExplosiveEffectType getEffectType() {
 		return effecttype;
 	}
 
-	public void setEffecttype(EffectType effecttype) {
-		this.effecttype = effecttype;
+	public void setEffectType(EffectType effecttype) {
+		this.effecttype = (ExplosiveEffectType) effecttype;
 	}
 	
 	@Override

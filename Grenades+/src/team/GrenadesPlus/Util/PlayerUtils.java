@@ -1,14 +1,18 @@
 package team.GrenadesPlus.Util;
 
-import org.bukkit.Location;
+import net.minecraft.server.Packet18ArmAnimation;
+import net.minecraft.server.WorldServer;
+
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.BlockIterator;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.GrenadesPlusPlayer;
+import team.GunsPlus.GunsPlus;
+import team.GunsPlus.Util.Util;
 
 public class PlayerUtils {
 	
@@ -31,19 +35,6 @@ public class PlayerUtils {
 		return null;
 	}
 	
-	public static Location getTargetBlock(SpoutPlayer sp, int range){
-		BlockIterator bitr = new BlockIterator(sp, range);
-		Location loc = null;
-		int i = 0;
-		while(bitr.hasNext()){
-			if(i==range){
-				loc = bitr.next().getLocation();
-			}
-			i++;
-		}
-		return loc;
-	}
-	
 	public static boolean hasSpoutcraft(Player p) {
 		SpoutPlayer sp = SpoutManager.getPlayer(p);
 		if (sp.isSpoutCraftEnabled()) {
@@ -54,9 +45,19 @@ public class PlayerUtils {
 
 	public static void sendNotification(SpoutPlayer sp, String title,
 			String text, ItemStack icon, int duration) {
-		try {
-			sp.sendNotification(title, text, icon, duration);
-		} catch (Exception e) {
+		if(!GunsPlus.notifications) return;
+		if(title.length()>26){
+			Util.warn("Too long notification. Check your gun and addition names.");
+			title = title.replace(title.substring(25, title.length()-1),"");
 		}
+		if(text.length()>26){
+			Util.warn("Too long notification. Check your gun and addition names.");
+			text = text.replace(text.substring(25, text.length()-1),"");
+		}
+		sp.sendNotification(title, text, icon, duration);
+	}
+	
+	public static void playArmAnimation(SpoutPlayer sp){
+		((WorldServer) ((CraftPlayer)sp).getHandle().world).tracker.a(((CraftPlayer)sp).getHandle(), new Packet18ArmAnimation(((CraftPlayer)sp).getHandle(), 1));
 	}
 }

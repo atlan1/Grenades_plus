@@ -6,8 +6,6 @@ import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.Block.Placeable;
 import team.GrenadesPlus.Enum.DesignType;
 import team.GrenadesPlus.Item.Throwable;
-import team.GrenadesPlus.Util.EffectHolder;
-import team.GrenadesPlus.Util.PropertyHolder;
 import team.GrenadesPlus.Util.Util;
 
 public class MaterialManager {
@@ -24,13 +22,5 @@ public class MaterialManager {
 		Placeable p = new Placeable(plugin, name, 46, 0,  design, hardness);
 		GrenadesPlus.allPlaceables.add(p);
 		return p;
-	}
-	
-	public static void copyProperties(PropertyHolder input, PropertyHolder result){
-		result.setProperties(input.getProperties());
-	}
-	
-	public static void copyEffects(EffectHolder input, EffectHolder result){
-		result.setEffects(input.getEffects());
 	}
 }

@@ -13,7 +13,7 @@ import org.getspout.spoutapi.material.CustomItem;
 import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.Block.Placeable;
 import team.GrenadesPlus.Enum.DesignType;
-import team.GrenadesPlus.Enum.Effect;
+import team.GrenadesPlus.Enum.ExplosiveEffect;
 import team.GrenadesPlus.Enum.Trigger;
 import team.GrenadesPlus.Util.Util;
 import team.GrenadesPlus.Manager.ConfigParser;
@@ -111,14 +111,14 @@ public class ConfigLoader {
 				int soundvolume = explosivesConfig.getInt(path+".sound.volume");
 				float speed = explosivesConfig.getInt(path+".speed");
 				List<Trigger> triggers = ConfigParser.parseTriggers(path.toString()+".triggers");
-				List<Effect> effects = ConfigParser.parseEffects(path.toString()+".effects");
+				List<ExplosiveEffect> effects = ConfigParser.parseEffects(path.toString()+".effects");
 				
 				Throwable t = MaterialManager.buildNewThrowable(GrenadesPlus.plugin, name, texture);
 				t.addProperty("SOUNDURL", sound);
 				t.addProperty("SOUNDVOLUME", soundvolume);
 				t.addProperty("SPEED", speed);
 				t.addProperty("TRIGGERS", triggers);
-				t.setEffects(effects);
+				t.addProperty("EFFECTS", effects);
 				
 			}catch (Exception e) {
 				Util.warn("Config Error: " + e.getMessage());
@@ -155,13 +155,14 @@ public class ConfigLoader {
 				String sound = explosivesConfig.getString(path+".sound.url");
 				int soundvolume = explosivesConfig.getInt(path+".sound.volume");
 				List<Trigger> triggers = ConfigParser.parseTriggers("Throwable"+path.toString()+".triggers");
-				List<Effect> effects = ConfigParser.parseEffects("Throwable."+path.toString()+".effects");
+				List<ExplosiveEffect> effects = ConfigParser.parseEffects("Throwable."+path.toString()+".effects");
 				
 				Placeable t = MaterialManager.buildNewPlaceable(GrenadesPlus.plugin, name, textureUrl, design, width, heigth, sprite, used, hardness);
 				t.addProperty("SOUNDURL", sound);
 				t.addProperty("SOUNDVOLUME", soundvolume);
 				t.addProperty("TRIGGERS", triggers);
-				t.setEffects(effects);
+				t.addProperty("DESIGN", design);
+				t.addProperty("EFFECTS", effects);
 				
 			}catch (Exception e) {
 				Util.warn("Config Error: " + e.getMessage());

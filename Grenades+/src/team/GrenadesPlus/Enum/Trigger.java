@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import team.GrenadesPlus.Util.PropertyHolder;
+import team.ApiPlus.API.PropertyHolder;
 
 public enum Trigger implements PropertyHolder{
 

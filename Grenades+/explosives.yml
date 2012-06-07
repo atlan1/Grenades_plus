@@ -13,7 +13,7 @@ Throwable:
 Placeable:
     C4:
         design:
-            type: cube
+            type: step
             attach-to-walls: true
             texture:
                 url: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Textures/C4.png'

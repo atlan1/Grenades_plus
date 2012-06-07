@@ -1,6 +1,5 @@
 package team.GrenadesPlus.Item;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,27 +7,28 @@ import java.util.Map;
 import org.bukkit.plugin.Plugin;
 import org.getspout.spoutapi.material.item.GenericCustomItem;
 
-import team.GrenadesPlus.Enum.Effect;
-import team.GrenadesPlus.Util.EffectHolder;
-import team.GrenadesPlus.Util.PropertyHolder;
+import team.ApiPlus.API.Effect.Effect;
+import team.ApiPlus.API.Effect.EffectHolder;
+import team.ApiPlus.API.PropertyHolder;
 
 public class Throwable extends GenericCustomItem implements EffectHolder, PropertyHolder{
 
-	private List<Effect> effects = new ArrayList<Effect>();
 	private Map<String, Object> properties = new HashMap<String, Object>();
 	
 	public Throwable(Plugin plugin, String name, String texture) {
 		super(plugin, name, texture);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Effect> getEffects() {
-		return effects;
+		return (List<Effect>) getProperty("EFFECTS");
 	}
 	
 	@Override
 	public void setEffects(List<Effect> eff){
-		effects = eff;
+		editProperty("EFFECTS", eff);
+		addProperty("EFFECTS", eff);
 	}
 
 	@Override

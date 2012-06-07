@@ -27,9 +27,10 @@ import org.getspout.spoutapi.sound.SoundManager;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
 import team.GrenadesPlus.GrenadesPlus;
+import team.GrenadesPlus.Block.Designs.StepDesign;
 import team.GrenadesPlus.Enum.DesignType;
-import team.GrenadesPlus.Enum.EffectSection;
-import team.GrenadesPlus.Enum.EffectType;
+import team.GrenadesPlus.Enum.ExplosiveEffectSection;
+import team.GrenadesPlus.Enum.ExplosiveEffectType;
 
 public class Util {
 	
@@ -262,7 +263,7 @@ public class Util {
 			return true;
 	}
 
-	public static boolean isAllowedInEffectSection(EffectType efftyp, EffectSection effsec) {
+	public static boolean isAllowedInEffectSection(ExplosiveEffectType efftyp, ExplosiveEffectSection effsec) {
 		switch(effsec){
 			case EXPLOSIVELOCATION:
 				switch(efftyp){
@@ -297,19 +298,23 @@ public class Util {
 	}
 
 	public static BlockDesign getBlockDesign(DesignType des, String texture, int width, int heigth, int sprite, int[] usedIds) {
-		System.out.print(usedIds);
 		switch(des){
 			case CUBE:
 				Texture tex = new Texture(GrenadesPlus.plugin, texture, width, heigth, sprite);
 				GrenadesPlus.loadedBlockTextures.add(tex);
-				if(usedIds.length==1)
-					return new GenericCubeBlockDesign(GrenadesPlus.plugin, tex, usedIds[0]);
-				else
+//				if(usedIds.length==1)
+//					return new GenericCubeBlockDesign(GrenadesPlus.plugin, tex, usedIds[0]);
+//				else
 					return new GenericCubeBlockDesign(GrenadesPlus.plugin, tex, usedIds);
 			case PYRAMID:
 				break;
 			case STEP:
-				break;
+				Texture tex1 = new Texture(GrenadesPlus.plugin, texture, width, heigth, sprite);
+				GrenadesPlus.loadedBlockTextures.add(tex1);
+//				if(usedIds.length==1)
+//					return new StepDesign(GrenadesPlus.plugin, tex1, usedIds[0], null, false);
+//				else
+					return new StepDesign(GrenadesPlus.plugin, tex1, usedIds, null, false);
 		}
 		return null;
 	}
