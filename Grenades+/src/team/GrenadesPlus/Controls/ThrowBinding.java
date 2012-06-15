@@ -1,14 +1,14 @@
-package team.GrenadesPlus;
+package team.GrenadesPlus.Controls;
 
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.event.input.KeyBindingEvent;
 import org.getspout.spoutapi.gui.ScreenType;
 import org.getspout.spoutapi.keyboard.BindingExecutionDelegate;
 
-import team.GrenadesPlus.Enum.KeyType;
+import team.GrenadesPlus.GrenadesPlus;
+import team.GrenadesPlus.GrenadesPlusPlayer;
 import team.GrenadesPlus.Util.ExplosiveUtils;
 import team.GrenadesPlus.Util.PlayerUtils;
-
 
 public class ThrowBinding implements BindingExecutionDelegate{
 	
@@ -22,7 +22,7 @@ public class ThrowBinding implements BindingExecutionDelegate{
 	}
 	
 	@Override
-	public void keyPressed(KeyBindingEvent e) {
+	public void keyPressed(KeyBindingEvent e) {		
 		if(e.getScreenType().equals(ScreenType.GAME_SCREEN)){
 			GrenadesPlusPlayer gpp = PlayerUtils.getPlayerBySpoutPlayer(e.getPlayer());
 			if(ExplosiveUtils.isThrowable(gpp.getPlayer().getItemInHand())&&!keytype.isHoldKey()){

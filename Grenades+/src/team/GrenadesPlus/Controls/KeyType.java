@@ -1,4 +1,4 @@
-package team.GrenadesPlus.Enum;
+package team.GrenadesPlus.Controls;
 
 import org.getspout.spoutapi.keyboard.Keyboard;
 

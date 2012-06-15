@@ -1,81 +1,38 @@
 package team.GrenadesPlus.Block;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.Plugin;
-import org.getspout.spoutapi.block.design.BlockDesign;
-import org.getspout.spoutapi.material.block.GenericCustomBlock;
+import org.getspout.spoutapi.player.SpoutPlayer;
+import team.ApiPlus.API.Type.BlockTypeEffectPlusProperty;
+import team.GrenadesPlus.Trigger.TriggerListener;
+import team.GrenadesPlus.Util.Explosive;
+import team.GrenadesPlus.Util.PlayerUtils;
 
-import team.ApiPlus.API.Effect.Effect;
-import team.ApiPlus.API.Effect.EffectHolder;
-import team.ApiPlus.API.PropertyHolder;
+public class Placeable extends BlockTypeEffectPlusProperty implements Explosive{
 
-public class Placeable extends GenericCustomBlock implements EffectHolder, PropertyHolder{
-
-	private Map<String, Object> properties = new HashMap<String, Object>();
-	
-	public Placeable(Plugin plugin, String name, int blockId, int metadata, BlockDesign design, int hardness) {
-		super(plugin, name, blockId, metadata, design);
-		this.setRotate(true);
-		this.setHardness(hardness);
-		this.setOpaque(false);
+	public Placeable(Plugin plugin, String name,  boolean isOpaque) {
+		super(plugin, name, isOpaque);
 	}
 	
 	@Override
 	public void onBlockPlace(World w, int x, int y, int z, LivingEntity le) {
+		if(le instanceof SpoutPlayer){
+			TriggerListener.onPlace(this, PlayerUtils.getPlayerBySpoutPlayer((SpoutPlayer)le), new Location(w, x, y, z).getBlock());
+		}
 		
 	}
 	
 	@Override
-	public void performEffects() {
-		
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Effect> getEffects() {
-		return (List<Effect>) getProperty("EFFECTS");
+	public boolean onBlockInteract(World world, int x, int y, int z, SpoutPlayer player) {
+		TriggerListener.onInteract(this, PlayerUtils.getPlayerBySpoutPlayer(player), new Location(world, x, y, z).getBlock());
+		return true;
 	}
 	
 	@Override
-	public void setEffects(List<Effect> eff){
-		editProperty("EFFECTS", eff);
-		addProperty("EFFECTS", eff);
+	public <T> void performEffects(T... arg0) {
+		System.out.print("BEEP");
 	}
-
-	@Override
-	public Object getProperty(String id) {
-		return properties.get(id);
-	}
-
-	@Override
-	public void addProperty(String id, Object property) {
-		if(!properties.containsKey(id))
-			properties.put(id, property);
-	}
-
-	@Override
-	public Map<String, Object> getProperties() {
-		return properties;
-	}
-
-	@Override
-	public void setProperties(Map<String, Object> properties) {
-		properties = new HashMap<String, Object>(properties);
-	}
-
-	@Override
-	public void removeProperty(String id) {
-		if(properties.containsKey(id))
-			properties.remove(id);
-	}
-
-	@Override
-	public void editProperty(String id, Object property) {
-		if(properties.containsKey(id))
-			properties.put(id, property);
-	}
+	
 }

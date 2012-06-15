@@ -1,4 +1,4 @@
-package team.GrenadesPlus.Enum;
+package team.GrenadesPlus.Effects;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import team.ApiPlus.API.Effect.EffectSection;
 
 public enum ExplosiveEffectSection implements EffectSection{
-	EXPLOSIVELOCATION(), TARGETENTITIES(), TARGETLOCATIONS(), THROWER(), LAYER(), FLIGHTPATH(), UNDEFINED();
+	EXPLOSIVELOCATION(), TARGETENTITIES(), TARGETLOCATIONS(), GRENADIER(), FLIGHTPATH(), UNDEFINED();
 	
 	private Map<String, Object> properties = new HashMap<String, Object>();
 	

@@ -27,12 +27,26 @@ import org.getspout.spoutapi.sound.SoundManager;
 import com.sk89q.worldguard.protection.flags.DefaultFlag;
 
 import team.GrenadesPlus.GrenadesPlus;
+import team.GrenadesPlus.Block.Designs.DesignType;
 import team.GrenadesPlus.Block.Designs.StepDesign;
-import team.GrenadesPlus.Enum.DesignType;
-import team.GrenadesPlus.Enum.ExplosiveEffectSection;
-import team.GrenadesPlus.Enum.ExplosiveEffectType;
+import team.GrenadesPlus.Effects.ExplosiveEffectSection;
+import team.GrenadesPlus.Effects.ExplosiveEffectType;
 
 public class Util {
+	
+	public static boolean distanceSmallerThan(final Location l1, final Location l2, double distance){
+		if(l1.toVector().distance(l2.toVector())<distance){
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean distanceBiggerThan(final Location l1, final Location l2, double distance){
+		if(l1.toVector().distance(l2.toVector())>distance){
+			return true;
+		}
+		return false;
+	}
 	
 	public static boolean isGrenadesPlusMaterial(String name) {
 		for (int i = 0; i < GrenadesPlus.allThrowables.size(); i++) {
@@ -281,9 +295,7 @@ public class Util {
 					default:
 						return true;
 				}
-			case THROWER:
-				return true;
-			case LAYER:
+			case GRENADIER:
 				return true;
 			case FLIGHTPATH:
 				switch(efftyp){

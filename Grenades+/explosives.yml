@@ -9,6 +9,12 @@ Throwable:
             volume: 100
         speed: 1.4
         triggers:
+            onhit: 
+                args: true
+                activation: onthrow
+            time:
+                args: 100
+                activation: onthrow
         effects:
 Placeable:
     C4:
@@ -26,5 +32,8 @@ Placeable:
             url: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Sounds/c4_explode1.wav'
             volume: 100
         triggers:
+            detonator:
+                #args: can be left out here since detonator doesn't take any arguments
+                activation: oninteract
         effects:
         

@@ -1,4 +1,4 @@
-package team.GrenadesPlus.Enum;
+package team.GrenadesPlus.Effects;
 
 import team.ApiPlus.API.Effect.EffectType;
 

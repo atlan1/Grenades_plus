@@ -12,13 +12,16 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 
+import team.ApiPlus.API.EffectHolder;
 import team.GrenadesPlus.Block.Placeable;
-import team.GrenadesPlus.Enum.ExplosiveEffect;
-import team.GrenadesPlus.Enum.ExplosiveEffectSection;
-import team.GrenadesPlus.Enum.ExplosiveEffectType;
-import team.GrenadesPlus.Enum.KeyType;
-import team.GrenadesPlus.Enum.Trigger;
+import team.GrenadesPlus.Controls.KeyType;
+import team.GrenadesPlus.Effects.ExplosiveEffect;
+import team.GrenadesPlus.Effects.ExplosiveEffectSection;
+import team.GrenadesPlus.Effects.ExplosiveEffectType;
 import team.GrenadesPlus.Item.Throwable;
+import team.GrenadesPlus.Trigger.ExplosiveTriggerType;
+import team.GrenadesPlus.Trigger.ExplosivesTrigger;
+import team.GrenadesPlus.Trigger.TriggerActivationType;
 import team.GrenadesPlus.Util.Util;
 import team.GrenadesPlus.GrenadesPlus;
 
@@ -131,39 +134,50 @@ public class ConfigParser {
     	return ia;
     }
     
-    public static List<Trigger> parseTriggers(String path){
-    	List<Trigger> triggers = new ArrayList<Trigger>();
+    public static String[] parseStringArray(FileConfiguration f, String node){
+    	String[] s = f.getString(node, "null").split(",");
+    	String[] array = new String[s.length];
+    	for(int i=0;i<array.length;i++){
+    		array[i] = s[i].trim();
+    	}
+    	return array;
+    }
+    
+    public static List<ExplosivesTrigger> parseTriggers(String path,EffectHolder effectHolder){
+    	List<ExplosivesTrigger> triggers = new ArrayList<ExplosivesTrigger>();
     	boolean throwable = false;
     	if(path.startsWith("Throwable"))
     		throwable = true;
     	if(!ConfigLoader.explosivesConfig.isConfigurationSection(path)||ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false).isEmpty()) return triggers;
     	for(String node: ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false)){
-    		Trigger t = Trigger.valueOf(node.toUpperCase());
+    		ExplosiveTriggerType t = ExplosiveTriggerType.valueOf(node.toUpperCase());
     		if(throwable){
-    			if(!Trigger.isThrowableTrigger(t))
+    			if(!ExplosiveTriggerType.isThrowableTrigger(t))
     				continue;
     		}else{
-    			if(!Trigger.isPlaceableTrigger(t))
+    			if(!ExplosiveTriggerType.isPlaceableTrigger(t))
     				continue;
     		}
+    		TriggerActivationType tat = TriggerActivationType.valueOf(ConfigLoader.explosivesConfig.getString(path+"."+node+".activation").toUpperCase());
+    		ExplosivesTrigger trig = new ExplosivesTrigger(t, effectHolder); 
     		switch(t){
 	    		case ONHIT:
-	    			t = Trigger.ONHIT();
+	    			t = ExplosiveTriggerType.ONHIT(trig, tat);
 	    			break;
 	    		case TIME:
-	    			t = Trigger.TIME(ConfigLoader.explosivesConfig.getInt(path+"."+node));
+	    			t = ExplosiveTriggerType.TIME(trig, tat, ConfigLoader.explosivesConfig.getInt(path+"."+node+".args"));
 	    			break;
 	    		case DETONATOR:
-	    			t = Trigger.DETONATOR();
+	    			t = ExplosiveTriggerType.DETONATOR(trig, tat);
 	    			break;
 	    		case REDSTONE:
-	    			t = Trigger.REDSTONE(ConfigLoader.explosivesConfig.getBoolean(path+"."+node));
+	    			t = ExplosiveTriggerType.REDSTONE(trig, tat, ConfigLoader.explosivesConfig.getBoolean(path+"."+node+".args"));
 	    			break;
 	    		case SHOCK:
-	    			t = Trigger.SHOCK(ConfigLoader.explosivesConfig.getInt(path+"."+node));
+	    			t = ExplosiveTriggerType.SHOCK(trig, tat, parseIntArray(ConfigLoader.explosivesConfig, path+"."+node+".args"));
 	    			break;
     		}
-    		triggers.add(t);
+    		triggers.add(trig);
     	}
     	return triggers;
     }
@@ -216,7 +230,7 @@ public class ConfigParser {
 		    		e.addProperty("DENSITY", ConfigLoader.explosivesConfig.getInt(path+".density"));
 		    		break;
 		    	case FIRE:
-		    		if(es.equals(ExplosiveEffectSection.TARGETENTITIES)||es.equals(ExplosiveEffectSection.THROWER)||es.equals(ExplosiveEffectSection.LAYER))
+		    		if(es.equals(ExplosiveEffectSection.TARGETENTITIES)||es.equals(ExplosiveEffectSection.GRENADIER))
 		    			e.addProperty("DURATION", ConfigLoader.explosivesConfig.getInt(path+".duration"));
 		    		else
 		    			e.addProperty("STRENGTH", ConfigLoader.explosivesConfig.getInt(path+".strength"));

@@ -15,6 +15,7 @@ public class GrenadesPlusListener implements Listener{
 
 	public GrenadesPlusListener(GrenadesPlus instance) {
 		plugin = instance;
+		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 	
 	@EventHandler
@@ -29,26 +30,4 @@ public class GrenadesPlusListener implements Listener{
 		if(PlayerUtils.hasSpoutcraft(e.getPlayer()))
 			GrenadesPlus.GrenadesPlusPlayers.remove((SpoutPlayer)e.getPlayer());
 	}
-	
-//	@EventHandler
-//	public void onRightClick(PlayerInteractEvent e){
-//		if(e.getAction().equals(Action.RIGHT_CLICK_AIR)||e.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-//			if(!PlayerUtils.hasSpoutcraft(e.getPlayer())) return;
-//			SpoutPlayer sp = (SpoutPlayer) e.getPlayer();
-//			if(ExplosiveUtils.isThrowable(sp.getItemInHand())){
-//				
-//			}
-//		}
-//	}
-//	
-//	@EventHandler
-//	public void onLeftClick(PlayerInteractEvent e){
-//		if(e.getAction().equals(Action.LEFT_CLICK_AIR)||e.getAction().equals(Action.LEFT_CLICK_BLOCK)){
-//			if(!PlayerUtils.hasSpoutcraft(e.getPlayer())) return;
-//			SpoutPlayer sp = (SpoutPlayer) e.getPlayer();
-//			if(ExplosiveUtils.isThrowable(sp.getItemInHand())){
-//				
-//			}
-//		}
-//	}
 }

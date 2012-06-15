@@ -10,13 +10,17 @@ import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.CustomBlock;
 import org.getspout.spoutapi.material.CustomItem;
 
+import team.ApiPlus.Manager.ItemManager;
+import team.ApiPlus.Manager.RecipeManager;
+import team.ApiPlus.Util.FileUtil;
 import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.Block.Placeable;
-import team.GrenadesPlus.Enum.DesignType;
-import team.GrenadesPlus.Enum.ExplosiveEffect;
-import team.GrenadesPlus.Enum.Trigger;
+import team.GrenadesPlus.Block.Designs.DesignType;
+import team.GrenadesPlus.Effects.ExplosiveEffect;
+import team.GrenadesPlus.Trigger.ExplosivesTrigger;
 import team.GrenadesPlus.Util.Util;
 import team.GrenadesPlus.Manager.ConfigParser;
+import team.GrenadesPlus.Item.Detonator;
 import team.GrenadesPlus.Item.Throwable;
 
 public class ConfigLoader {
@@ -47,12 +51,12 @@ public class ConfigLoader {
 	}
 
 	private static void firstRun() {
-		if(FileManager.create(explosivesFile))
-			FileManager.copy(GrenadesPlus.plugin.getResource("explosives.yml"), ConfigLoader.explosivesFile);
-		if(FileManager.create(recipeFile))
-			FileManager.copy(GrenadesPlus.plugin.getResource("recipes.yml"), ConfigLoader.recipeFile);
-		if(FileManager.create(generalFile))
-			FileManager.copy(GrenadesPlus.plugin.getResource("general.yml"), ConfigLoader.generalFile);
+		if(FileUtil.create(explosivesFile))
+			FileUtil.copy(GrenadesPlus.plugin.getResource("explosives.yml"), ConfigLoader.explosivesFile);
+		if(FileUtil.create(recipeFile))
+			FileUtil.copy(GrenadesPlus.plugin.getResource("recipes.yml"), ConfigLoader.recipeFile);
+		if(FileUtil.create(generalFile))
+			FileUtil.copy(GrenadesPlus.plugin.getResource("general.yml"), ConfigLoader.generalFile);
 	}
 	
 	public static void loadRecipes(){
@@ -81,7 +85,7 @@ public class ConfigLoader {
 					result = new SpoutItemStack(cb, amount);
 				}
 				List<ItemStack> ingredients = ConfigParser.parseItems(recipeConfig.getString(key+".ingredients"));
-				team.GrenadesPlus.Manager.RecipeManager.RecipeType type = team.GrenadesPlus.Manager.RecipeManager.RecipeType.valueOf(recipeConfig.getString(key+".type").toUpperCase());
+				RecipeManager.RecipeType type = RecipeManager.RecipeType.valueOf(recipeConfig.getString(key+".type").toUpperCase());
 				RecipeManager.addRecipe(type, ingredients, result);
 			}catch (Exception e) {
 				Util.warn("Config Error: " + e.getMessage());
@@ -110,10 +114,13 @@ public class ConfigLoader {
 				String sound = explosivesConfig.getString(path+".sound.url");
 				int soundvolume = explosivesConfig.getInt(path+".sound.volume");
 				float speed = explosivesConfig.getInt(path+".speed");
-				List<Trigger> triggers = ConfigParser.parseTriggers(path.toString()+".triggers");
+				
 				List<ExplosiveEffect> effects = ConfigParser.parseEffects(path.toString()+".effects");
 				
 				Throwable t = MaterialManager.buildNewThrowable(GrenadesPlus.plugin, name, texture);
+				//triggers has to be loaded after creation because they need the throwable as effectholder parameter
+				List<ExplosivesTrigger> triggers = ConfigParser.parseTriggers(path.toString()+".triggers", t);
+				
 				t.addProperty("SOUNDURL", sound);
 				t.addProperty("SOUNDVOLUME", soundvolume);
 				t.addProperty("SPEED", speed);
@@ -154,10 +161,13 @@ public class ConfigLoader {
 				int[]  used = ConfigParser.parseIntArray(explosivesConfig, path+".design.texture.used-ids");
 				String sound = explosivesConfig.getString(path+".sound.url");
 				int soundvolume = explosivesConfig.getInt(path+".sound.volume");
-				List<Trigger> triggers = ConfigParser.parseTriggers("Throwable"+path.toString()+".triggers");
-				List<ExplosiveEffect> effects = ConfigParser.parseEffects("Throwable."+path.toString()+".effects");
+				
+				List<ExplosiveEffect> effects = ConfigParser.parseEffects(path.toString()+".effects");
 				
 				Placeable t = MaterialManager.buildNewPlaceable(GrenadesPlus.plugin, name, textureUrl, design, width, heigth, sprite, used, hardness);
+				
+				List<ExplosivesTrigger> triggers = ConfigParser.parseTriggers(path.toString()+".triggers", t);
+				
 				t.addProperty("SOUNDURL", sound);
 				t.addProperty("SOUNDVOLUME", soundvolume);
 				t.addProperty("TRIGGERS", triggers);
@@ -193,9 +203,25 @@ public class ConfigLoader {
 				GrenadesPlus.transparentMaterials.add(il.get(m).getType());
 			}
 
+			loadDetonator();
+			
 		} catch (Exception e) {
 			Util.warn( "Config Error: " + e.getMessage());
 			Util.debug(e);}
+	}
+	
+	private static void loadDetonator(){
+		String tex = ConfigLoader.generalConfig.getString("detonator.texture");
+		String name = ConfigLoader.generalConfig.getString("detonator.name", "Detonator");
+		int range = ConfigLoader.generalConfig.getInt("detonator.range", 30);
+		try {
+			Detonator deto = (Detonator) ItemManager.getInstance().buildItem(GrenadesPlus.plugin, name, tex, "Detonator");
+			deto.addProperty("RANGE", range);
+			GrenadesPlus.detonator = deto;
+		} catch (Exception e) {
+			Util.warn(e.getMessage());
+			Util.debug(e);
+		}
 	}
 	
 }

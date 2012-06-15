@@ -1,4 +1,4 @@
-package team.GrenadesPlus.Enum;
+package team.GrenadesPlus.Block.Designs;
 
 public enum DesignType {
 

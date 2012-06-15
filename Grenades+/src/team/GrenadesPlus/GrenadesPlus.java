@@ -8,28 +8,36 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.block.design.Texture;
-
+import team.ApiPlus.API.PluginPlus;
+import team.ApiPlus.API.Type.BlockType;
+import team.ApiPlus.API.Type.ItemType;
+import team.GrenadesPlus.API.GrenadesPlusAPI;
 import team.GrenadesPlus.Block.Placeable;
-import team.GrenadesPlus.Enum.KeyType;
+import team.GrenadesPlus.Controls.KeyType;
+import team.GrenadesPlus.Controls.ThrowBinding;
+import team.GrenadesPlus.Item.Detonator;
 import team.GrenadesPlus.Item.Throwable;
 import team.GrenadesPlus.Manager.ConfigLoader;
+import team.GrenadesPlus.Trigger.TriggerListener;
 import team.GunsPlus.GunsPlus;
 
 import com.griefcraft.lwc.LWC;
 import com.griefcraft.lwc.LWCPlugin;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
-public class GrenadesPlus extends JavaPlugin{
+public class GrenadesPlus extends PluginPlus{
 	public static final String PRE = "[Grenades+] ";
 	public static final Logger log = Bukkit.getLogger();
 	
@@ -40,16 +48,26 @@ public class GrenadesPlus extends JavaPlugin{
 	public static WorldGuardPlugin wg;
 	public static boolean useFurnaceAPI = false;
 	
+	private GrenadesPlusAPI api;
+	
 	public static boolean warnings = true;
 	public static boolean debug = false;
 	public static boolean notifications = true;
 	public static boolean autoreload = true;
 	public static KeyType throwType = new KeyType("G", true);
 	
+	public static Map<String,  Class<? extends ItemType>> customItemTypes = new HashMap<String, Class<? extends ItemType>>();
+	public static Map<String,  Class<? extends BlockType>> customBlockTypes = new HashMap<String, Class<? extends BlockType>>();
+	static{
+		customItemTypes.put("Throwable", Throwable.class);
+		customItemTypes.put("Detonator", Detonator.class);
+		customBlockTypes.put("Placeable", Placeable.class);
+	}
+	
 	public static List<Throwable> allThrowables = new ArrayList<Throwable>();
 	public static List<Placeable> allPlaceables = new ArrayList<Placeable>();
 	public static List<Material> transparentMaterials = new ArrayList<Material>();
-	
+	public static Detonator detonator;
 	public static List<Texture> loadedBlockTextures = new ArrayList<Texture>();
 	
 	public static List<GrenadesPlusPlayer> GrenadesPlusPlayers = new ArrayList<GrenadesPlusPlayer>();
@@ -68,14 +86,21 @@ public class GrenadesPlus extends JavaPlugin{
 //		new VersionChecker(this, ""); TODO: Add rss url
 		
 		hook();
+		
+		this.registerBlockTypes(customBlockTypes);
+		this.registerItemTypes(customItemTypes);
+		
 		init();
 		
 		getCommand("grenades+").setExecutor(new CommandEx(this));
-		getServer().getPluginManager().registerEvents(new GrenadesPlusListener(this), this);
+		new GrenadesPlusListener(this);
+		new TriggerListener(this);
 		new ThrowBinding(this, throwType);
+		api = new GrenadesPlusAPI(this);
 		
-		log.log(Level.INFO, PRE + " version " + getDescription().getVersion()
-				+ " is now enabled.");
+		
+		
+		log.log(Level.INFO, PRE + " version " + getDescription().getVersion()+ " is now enabled.");
 	}
 	
 	private void init(){
@@ -148,5 +173,15 @@ public class GrenadesPlus extends JavaPlugin{
 		in.close();
 		out.close();
 		log.info(PRE+"Download of "+file.getName()+" finished!");
+	}
+	
+	public GrenadesPlusAPI getAPI() {
+		return api;
+	}
+
+	@Override
+	public void loadConfig(FileConfiguration arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }
