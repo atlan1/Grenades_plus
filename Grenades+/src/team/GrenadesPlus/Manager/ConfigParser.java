@@ -1,23 +1,21 @@
 package team.GrenadesPlus.Manager;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
-
 import team.ApiPlus.API.EffectHolder;
+import team.ApiPlus.API.Effect.Effect;
+import team.ApiPlus.API.Effect.EffectType;
+import team.ApiPlus.Manager.EffectManager;
 import team.GrenadesPlus.Block.Placeable;
 import team.GrenadesPlus.Controls.KeyType;
-import team.GrenadesPlus.Effects.ExplosiveEffect;
-import team.GrenadesPlus.Effects.ExplosiveEffectSection;
-import team.GrenadesPlus.Effects.ExplosiveEffectType;
+import team.GrenadesPlus.Effects.EffectSection;
 import team.GrenadesPlus.Item.Throwable;
 import team.GrenadesPlus.Trigger.ExplosiveTriggerType;
 import team.GrenadesPlus.Trigger.ExplosivesTrigger;
@@ -182,80 +180,81 @@ public class ConfigParser {
     	return triggers;
     }
     
-    public static List<ExplosiveEffect> parseEffects(String path){
-    	List<ExplosiveEffect> effects = new ArrayList<ExplosiveEffect>();
+    public static List<Effect> parseEffects(String path) throws Exception{
+    	List<Effect> effects = new ArrayList<Effect>();
     	if(!ConfigLoader.explosivesConfig.isConfigurationSection(path)||ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false).isEmpty()) return effects;
-    	for(String effectsection: ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false)){
-    		ExplosiveEffectSection effsec = ExplosiveEffectSection.valueOf(effectsection.toUpperCase());
-    		setSectionArguments(path+"."+effectsection, effsec);
-    		for(String effecttype : ConfigLoader.explosivesConfig.getConfigurationSection(path+"."+effectsection).getKeys(false)){
-    			if(effecttype.toUpperCase().equalsIgnoreCase("arguments")) continue;
-    			ExplosiveEffectType efftyp = ExplosiveEffectType.valueOf(effecttype.toUpperCase());
-    			if(Util.isAllowedInEffectSection(efftyp, effsec)){
-    				effects.add(buildEffect(efftyp, effsec, path+"."+effectsection+"."+effecttype));
-    			}
-    		}
+    	for(String effect_: ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false)){
+    		String newpath=path+"."+effect_;
+    		String type =  ConfigLoader.explosivesConfig.getString(newpath+".type");
+    		EffectType efftyp = EffectType.valueOf(type.toUpperCase());
+    		EffectSection effsec = buildEffectTarget(newpath+".target");
+    		if(Util.isAllowedInEffectSection(efftyp, effsec))
+    			effects.add(buildEffect(effsec, efftyp, newpath));
+    		else throw new Exception("The effect type "+efftyp.toString().toLowerCase()+" is not allowed to have the target "+effsec);
     	}
     	return effects;
     }
     
-    private static void setSectionArguments(String path ,ExplosiveEffectSection e){
-    	Map<String, Object> map = new HashMap<String, Object>();
-    	ConfigurationSection cs = ConfigLoader.explosivesConfig.getConfigurationSection(path+".arguments");
-    	if(cs==null) return;
-    	switch(e) {
-    		case FLIGHTPATH:
-    			if(cs.getInt("length")!=0)
-    				map.put("LENGTH", (Integer)cs.getInt("length"));
-    			else return;
-    			break;
-    		default:
-    			if(cs.getInt("radius")!=0)
-    				map.put("RADIUS", (Integer)cs.getInt("radius"));
-    			else return;
-    			break;
+    private static EffectSection buildEffectTarget(String path) {
+    	ArrayList<Map<?, ?>> args = new ArrayList<Map<?,?>>(ConfigLoader.explosivesConfig.getMapList(path+".args"));
+    	EffectSection effsec = EffectSection.valueOf(ConfigLoader.explosivesConfig.getString(path+".type").toUpperCase());
+    	if(args.isEmpty()||args==null) return effsec;
+    	switch(effsec){
+	    	case TARGETLOCATION:
+	    		effsec.addProperty("RADIUS", searchKeyInMapList(args, "radius").get("radius"));
+	    		break;
+	    	case EXPLOSIVELOCATION:
+	    		effsec.addProperty("RADIUS", searchKeyInMapList(args, "radius").get("radius"));
+	    		break;
+	    	case GRENADIERLOCATION:
+	    		effsec.addProperty("RADIUS", searchKeyInMapList(args, "radius").get("radius"));
+	    		break;
     	}
-    	e.setProperties(map);
+    	return effsec;
     }
     
-    private static ExplosiveEffect buildEffect(ExplosiveEffectType efftyp, ExplosiveEffectSection es, String path){
-    		ExplosiveEffect e = new ExplosiveEffect(efftyp, es);
-    		switch(efftyp){
+    private static Effect buildEffect(EffectSection es, EffectType t, String path) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+    	Effect e = null;
+    	ArrayList<Map<?, ?>> args = new ArrayList<Map<?,?>>(ConfigLoader.explosivesConfig.getMapList(path+".args"));
+    		switch(t){
 		    	case EXPLOSION:
-		    		e.addProperty("SIZE", ConfigLoader.explosivesConfig.getInt(path+".size"));
+		    		e =  EffectManager.getInstance().buildEffect(t.getEffectName(), searchKeyInMapList(args, "size").get("size")); 
 		    		break;
 		    	case LIGHTNING:
+		    		e =  EffectManager.getInstance().buildEffect(t.getEffectName()); 
 		    		break;
-		    	case SMOKE:
-		    		e.addProperty("DENSITY", ConfigLoader.explosivesConfig.getInt(path+".density"));
-		    		break;
-		    	case FIRE:
-		    		if(es.equals(ExplosiveEffectSection.TARGETENTITIES)||es.equals(ExplosiveEffectSection.GRENADIER))
-		    			e.addProperty("DURATION", ConfigLoader.explosivesConfig.getInt(path+".duration"));
-		    		else
-		    			e.addProperty("STRENGTH", ConfigLoader.explosivesConfig.getInt(path+".strength"));
-		    		break;
-		    	case PUSH:
-		    		e.addProperty("SPEED", ConfigLoader.explosivesConfig.getDouble(path+".speed"));
-		    		break;
-		    	case DRAW:
-		    		e.addProperty("SPEED", ConfigLoader.explosivesConfig.getDouble(path+".speed"));
+		    	case MOVE:
+		    		e =  EffectManager.getInstance().buildEffect(t.getEffectName(), searchKeyInMapList(args, "speed").get("speed"), searchKeyInMapList(args, "direction").get("direction"));
 		    		break;
 		    	case POTION:
-		    		e.addProperty("ID", ConfigLoader.explosivesConfig.getInt(path+".id"));
-		    		e.addProperty("DURATION", ConfigLoader.explosivesConfig.getInt(path+".duration"));
-		    		e.addProperty("STRENGTH", ConfigLoader.explosivesConfig.getInt(path+".strength"));
+		    		e =  EffectManager.getInstance().buildEffect(t.getEffectName(), searchKeyInMapList(args, "id").get("id"), searchKeyInMapList(args, "duration").get("duration"), searchKeyInMapList(args, "strength").get("strength") );
 		    		break;
 		    	case SPAWN:
-		    		e.addProperty("ENTITY", ConfigLoader.explosivesConfig.getString(path+".entity"));
+		    		e =  EffectManager.getInstance().buildEffect(t.getEffectName(), searchKeyInMapList(args, "entity").get("entity"));
 		    		break;
 		    	case PLACE:
-		    		e.addProperty("BLOCK", ConfigLoader.explosivesConfig.getString(path+".block"));
+		    		e =  EffectManager.getInstance().buildEffect(t.getEffectName(), parseItem((String)searchKeyInMapList(args, "block").get("block")).getType());
 		    		break;
 		    	case BREAK:
-		    		e.addProperty("POTENCY", ConfigLoader.explosivesConfig.getDouble(path+".potency"));
+		    		e =  EffectManager.getInstance().buildEffect(t.getEffectName(), searchKeyInMapList(args, "potency").get("potency"));
+		    		break;
+		    	case PARTICLE:
+		    		e =  EffectManager.getInstance().buildEffect(t.getEffectName(), searchKeyInMapList(args, "type").get("type"), searchKeyInMapList(args, "amount").get("amount"), searchKeyInMapList(args, "gravity").get("gravity"), searchKeyInMapList(args, "max-age").get("max-age"), searchKeyInMapList(args, "scale").get("scale"));
+		    		break;
+		    	case BURN:
+		    		e =  EffectManager.getInstance().buildEffect(t.getEffectName(), searchKeyInMapList(args, "duration").get("duration"));
 		    		break;
     	}
+    		e.setEffectTarget(es);
     	return e;
+    }
+    
+    private static Map<?, ?> searchKeyInMapList(List<Map<?,?>> maplist, String key){
+    	for(Map<?, ?> map : maplist){
+    		if(map.containsKey(key)){
+    			return map;
+    		}
+    	}
+    	return null;
     }
 }

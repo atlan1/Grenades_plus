@@ -4,9 +4,9 @@ import team.GrenadesPlus.GrenadesPlus;
 
 public class GrenadesPlusAPI {
 
-	private GrenadesPlus plugin;
+//	private GrenadesPlus plugin;
 
 	public GrenadesPlusAPI(GrenadesPlus plugin){
-		this.plugin = plugin;
+//		this.plugin = plugin;
 	}
 }

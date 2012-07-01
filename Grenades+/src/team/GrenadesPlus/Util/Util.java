@@ -1,36 +1,22 @@
 package team.GrenadesPlus.Util;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
-import org.bukkit.util.Vector;
 import org.getspout.spoutapi.SpoutManager;
-import org.getspout.spoutapi.block.design.BlockDesign;
-import org.getspout.spoutapi.block.design.GenericCubeBlockDesign;
-import org.getspout.spoutapi.block.design.Texture;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.sound.SoundManager;
 
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
-
+import team.ApiPlus.API.Effect.EffectType;
+import team.ApiPlus.API.Effect.EntityEffect;
+import team.ApiPlus.Util.Utils;
 import team.GrenadesPlus.GrenadesPlus;
-import team.GrenadesPlus.Block.Designs.DesignType;
-import team.GrenadesPlus.Block.Designs.StepDesign;
-import team.GrenadesPlus.Effects.ExplosiveEffectSection;
-import team.GrenadesPlus.Effects.ExplosiveEffectType;
+import team.GrenadesPlus.Effects.EffectSection;
 
 public class Util {
 	
@@ -133,201 +119,43 @@ public class Util {
 		Location o = observer.clone();
 		Location w = observed.clone();
 		if(o.toVector().distance(w.toVector())>range) return false;
-		BlockIterator bitr = new BlockIterator(setLookingAt(o, w), 0, range);
+		BlockIterator bitr = new BlockIterator(Utils.setLookingAt(o, w), 0, range);
 		while (bitr.hasNext()) {
 			Block b = bitr.next();
 			if(b.equals(w.getBlock())) return true;
-			if (!Util.isTransparent(b)) {
+			if (!Utils.isTransparent(b)) {
 				break;
 			}
 		}
 		return false;
 	}
 
-	public static boolean isTransparent(Block block) {
-		Material m = block.getType();
-		if (GrenadesPlus.transparentMaterials.contains(m)) {
-			return true;
-		}
-		return false;
-	}
-
-	public static Location getMiddle(Location l, float YShift) {
- 		Location loc = l;
-		loc = loc.getBlock().getLocation();
-		Vector vec = loc.toVector();
-		vec.add(new Vector(0.5, YShift, 0.5));
-		loc = vec.toLocation(loc.getWorld());
-		return loc;
-	}
-	
 	public static void playCustomSound(GrenadesPlus plugin, Location l, String url,
 			int volume) {
 		SoundManager SM = SpoutManager.getSoundManager();
 		SM.playGlobalCustomSoundEffect(plugin, url, false, l, 40, volume);
 	}
 
-	public static List<Entity> getNearbyEntities(Location loc, double radiusX,
-			double radiusY, double radiusZ) {
-		Entity e = loc.getWorld().spawn(loc, ExperienceOrb.class);
-		@SuppressWarnings("unchecked")
-		List<Entity> entities = (List<Entity>) ((ArrayList<Entity>) e.getNearbyEntities(radiusX, radiusY, radiusZ)).clone();
-		e.remove();
-		return entities;
-	}
-
-	public static int getRandomInteger(int start, int end) {
-		Random rand = new Random();
-		return start + rand.nextInt(end + 1);
-	}
-
-	public static Vector getDirection(Location l) {
-		Vector vector = new Vector();
-
-		double rotX = l.getYaw();
-		double rotY = l.getPitch();
-
-		vector.setY(-Math.sin(Math.toRadians(rotY)));
-
-		double h = Math.cos(Math.toRadians(rotY));
-
-		vector.setX(-h * Math.sin(Math.toRadians(rotX)));
-		vector.setZ(h * Math.cos(Math.toRadians(rotX)));
-
-		return vector;
-	}
-
-	public static Location setLookingAt(Location loc, Location lookat) {
-		loc = loc.clone();
-		double dx = lookat.getX() - loc.getX();
-		double dy = lookat.getY() - loc.getY();
-		double dz = lookat.getZ() - loc.getZ();
-
-		if (dx != 0) {
-			if (dx < 0) {
-				loc.setYaw((float) (1.5 * Math.PI));
-			} else {
-				loc.setYaw((float) (0.5 * Math.PI));
-			}
-			loc.setYaw((float) loc.getYaw() - (float) Math.atan(dz / dx));
-		} else if (dz < 0) {
-			loc.setYaw((float) Math.PI);
-		}
-		double dxz = Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2));
-		loc.setPitch((float) -Math.atan(dy / dxz));
-		loc.setYaw(-loc.getYaw() * 180f / (float) Math.PI);
-		loc.setPitch(loc.getPitch() * 180f / (float) Math.PI);
-
-		return loc;
-	}
-
-	public static Location getHandLocation(Player p) {
-		Location loc = p.getLocation().clone();
-
-		double a = loc.getYaw() / 180D * Math.PI + Math.PI / 2;
-		double l = Math.sqrt(0.8D * 0.8D + 0.4D * 0.4D);
-
-		loc.setX(loc.getX() + l * Math.cos(a) - 0.8D * Math.sin(a));
-		loc.setY(loc.getY() + p.getEyeHeight() - 0.2D);
-		loc.setZ(loc.getZ() + l * Math.sin(a) + 0.8D * Math.cos(a));
-		return loc;
-	}
-	
-	public static List<Block> getSphere(Location center, double radius) {
-		List<Block> blockList = new ArrayList<Block>();
-	    radius += 0.5;
-	    final double radSquare = Math.pow(2, radius);
-	    final int radCeil = (int) Math.ceil(radius);
-	    final double centerX = center.getX();
-	    final double centerY = center.getY();
-	    final double centerZ = center.getZ();
-	 
-	    for(double x = centerX - radCeil; x <= centerX + radCeil; x++) {
-	        for(double y = centerY - radCeil; y <= centerY + radCeil; y++) {
-	            for(double z = centerZ - radCeil; z <= centerZ + radCeil; z++) {
-	                double distSquare = Math.pow(2, x - centerX) + Math.pow(2,y - centerY) + Math.pow(2,z - centerZ);
-	                if (distSquare > radSquare)
-	                    continue;
-	                Location currPoint = new Location(center.getWorld(), x, y, z);
-	                blockList.add(currPoint.getBlock());
-	            }
-	        }
-	    }
-	    return blockList;
-	}
-
-	public static boolean isBlockAction(Action a) {
-		switch (a) {
-		case RIGHT_CLICK_BLOCK:
-			return true;
-		case LEFT_CLICK_BLOCK:
-			return true;
-		}
-		return false;
-	}
-
-	public static boolean tntIsAllowedInRegion(Location loc) {
-		if (GrenadesPlus.wg != null) {
-			if (!GrenadesPlus.wg.getGlobalRegionManager().allows(DefaultFlag.TNT,
-					loc)) {
-				return false;
-			} else
-				return true;
-		} else
-			return true;
-	}
-
-	public static boolean isAllowedInEffectSection(ExplosiveEffectType efftyp, ExplosiveEffectSection effsec) {
+	public static boolean isAllowedInEffectSection(EffectType efftyp, EffectSection effsec) {
 		switch(effsec){
 			case EXPLOSIVELOCATION:
-				switch(efftyp){
-					case POTION:
-						return false;
-					default:
-						return true;
-				}
-			case TARGETENTITIES:
+				if(efftyp.getEffectClass().isAssignableFrom(EntityEffect.class)){
+					return false;
+				}else return true;
+			case TARGETENTITY:
 				return true;
-			case TARGETLOCATIONS:
-				switch(efftyp){
-					case POTION:
-						return false;
-					default:
-						return true;
-				}
+			case TARGETLOCATION:
+				if(efftyp.getEffectClass().isAssignableFrom(EntityEffect.class)){
+					return false;
+				}else return true;
 			case GRENADIER:
 				return true;
-			case FLIGHTPATH:
-				switch(efftyp){
-					case POTION:
-						return false;
-					default:
-						return true;
-				}
+			case GRENADIERLOCATION:
+				if(efftyp.getEffectClass().isAssignableFrom(EntityEffect.class)){
+					return false;
+				}else return true;
 		}
 		
 		return false;
-	}
-
-	public static BlockDesign getBlockDesign(DesignType des, String texture, int width, int heigth, int sprite, int[] usedIds) {
-		switch(des){
-			case CUBE:
-				Texture tex = new Texture(GrenadesPlus.plugin, texture, width, heigth, sprite);
-				GrenadesPlus.loadedBlockTextures.add(tex);
-//				if(usedIds.length==1)
-//					return new GenericCubeBlockDesign(GrenadesPlus.plugin, tex, usedIds[0]);
-//				else
-					return new GenericCubeBlockDesign(GrenadesPlus.plugin, tex, usedIds);
-			case PYRAMID:
-				break;
-			case STEP:
-				Texture tex1 = new Texture(GrenadesPlus.plugin, texture, width, heigth, sprite);
-				GrenadesPlus.loadedBlockTextures.add(tex1);
-//				if(usedIds.length==1)
-//					return new StepDesign(GrenadesPlus.plugin, tex1, usedIds[0], null, false);
-//				else
-					return new StepDesign(GrenadesPlus.plugin, tex1, usedIds, null, false);
-		}
-		return null;
 	}
 }

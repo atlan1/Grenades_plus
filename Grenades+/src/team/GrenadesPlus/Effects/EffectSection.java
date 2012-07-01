@@ -3,10 +3,11 @@ package team.GrenadesPlus.Effects;
 import java.util.HashMap;
 import java.util.Map;
 
-import team.ApiPlus.API.Effect.EffectSection;
+import team.ApiPlus.API.PropertyHolder;
+import team.ApiPlus.API.Effect.EffectTarget;
 
-public enum ExplosiveEffectSection implements EffectSection{
-	EXPLOSIVELOCATION(), TARGETENTITIES(), TARGETLOCATIONS(), GRENADIER(), FLIGHTPATH(), UNDEFINED();
+public enum EffectSection implements EffectTarget, PropertyHolder{
+	EXPLOSIVELOCATION(), TARGETENTITY(), TARGETLOCATION(), GRENADIER(), GRENADIERLOCATION();
 	
 	private Map<String, Object> properties = new HashMap<String, Object>();
 	
@@ -41,5 +42,11 @@ public enum ExplosiveEffectSection implements EffectSection{
 	public void editProperty(String id, Object property) {
 		if(properties.containsKey(id))
 			properties.put(id, property);
+	}
+	
+	@Override
+	public void setProperty(String id, Object property) {
+		addProperty(id, property);
+		editProperty(id, property);
 	}
 }

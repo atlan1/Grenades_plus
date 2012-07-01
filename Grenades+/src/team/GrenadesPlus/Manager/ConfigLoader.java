@@ -3,6 +3,7 @@ package team.GrenadesPlus.Manager;
 import java.io.File;
 import java.util.List;
 
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -10,13 +11,13 @@ import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.material.CustomBlock;
 import org.getspout.spoutapi.material.CustomItem;
 
+import team.ApiPlus.API.Effect.Effect;
 import team.ApiPlus.Manager.ItemManager;
 import team.ApiPlus.Manager.RecipeManager;
 import team.ApiPlus.Util.FileUtil;
 import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.Block.Placeable;
 import team.GrenadesPlus.Block.Designs.DesignType;
-import team.GrenadesPlus.Effects.ExplosiveEffect;
 import team.GrenadesPlus.Trigger.ExplosivesTrigger;
 import team.GrenadesPlus.Util.Util;
 import team.GrenadesPlus.Manager.ConfigParser;
@@ -113,15 +114,17 @@ public class ConfigLoader {
 				String texture = explosivesConfig.getString(path+".texture");
 				String sound = explosivesConfig.getString(path+".sound.url");
 				int soundvolume = explosivesConfig.getInt(path+".sound.volume");
+				int radius = explosivesConfig.getInt(path+".radius");
 				float speed = explosivesConfig.getInt(path+".speed");
 				
-				List<ExplosiveEffect> effects = ConfigParser.parseEffects(path.toString()+".effects");
+				List<Effect> effects = ConfigParser.parseEffects(path.toString()+".effects");
 				
-				Throwable t = MaterialManager.buildNewThrowable(GrenadesPlus.plugin, name, texture);
+				Throwable t = MaterialManager.buildThrowable(GrenadesPlus.plugin, name, texture);
 				//triggers has to be loaded after creation because they need the throwable as effectholder parameter
 				List<ExplosivesTrigger> triggers = ConfigParser.parseTriggers(path.toString()+".triggers", t);
 				
 				t.addProperty("SOUNDURL", sound);
+				t.addProperty("RADIUS", radius);
 				t.addProperty("SOUNDVOLUME", soundvolume);
 				t.addProperty("SPEED", speed);
 				t.addProperty("TRIGGERS", triggers);
@@ -151,8 +154,6 @@ public class ConfigLoader {
 				String name = key.toString();
 				String textureUrl = explosivesConfig.getString(path+".design.texture.url");
 				DesignType design = DesignType.valueOf(explosivesConfig.getString(path+".design.type", "cube").toUpperCase());
-				if(design==null)
-					design = DesignType.CUBE;
 				design.setAttaching(explosivesConfig.getBoolean(path+".design.attach-to-walls", false));
 				int width = explosivesConfig.getInt(path+".design.texture.width", 16);
 				int heigth = explosivesConfig.getInt(path+".design.texture.heigth", 16);
@@ -162,9 +163,9 @@ public class ConfigLoader {
 				String sound = explosivesConfig.getString(path+".sound.url");
 				int soundvolume = explosivesConfig.getInt(path+".sound.volume");
 				
-				List<ExplosiveEffect> effects = ConfigParser.parseEffects(path.toString()+".effects");
+				List<Effect> effects = ConfigParser.parseEffects(path.toString()+".effects");
 				
-				Placeable t = MaterialManager.buildNewPlaceable(GrenadesPlus.plugin, name, textureUrl, design, width, heigth, sprite, used, hardness);
+				Placeable t = MaterialManager.buildPlaceable(GrenadesPlus.plugin, name, textureUrl, design, width, heigth, sprite, used, hardness);
 				
 				List<ExplosivesTrigger> triggers = ConfigParser.parseTriggers(path.toString()+".triggers", t);
 				
@@ -174,6 +175,13 @@ public class ConfigLoader {
 				t.addProperty("DESIGN", design);
 				t.addProperty("EFFECTS", effects);
 				
+				if(design.isAttaching()){
+					for(BlockFace bf : BlockFace.values()){
+						if(bf.equals(BlockFace.DOWN)||bf.equals(BlockFace.EAST)||bf.equals(BlockFace.NORTH)||bf.equals(BlockFace.SOUTH)||bf.equals(BlockFace.WEST)){
+							MaterialManager.buildWallDesignPlaceable(t, GrenadesPlus.plugin, name+"_"+bf.toString(), textureUrl, design, width, heigth, sprite, used, hardness, bf);
+						}
+					}
+				}
 			}catch (Exception e) {
 				Util.warn("Config Error: " + e.getMessage());
 				Util.debug(e);
@@ -197,11 +205,6 @@ public class ConfigLoader {
 			String z = ConfigLoader.generalConfig.getString("throw", "G_");
 			GrenadesPlus.throwType = ConfigParser.parseKeyType(z);
 			if(GrenadesPlus.throwType==null) throw new Exception(" Could not parse throw key!");
-			
-			List<ItemStack> il = ConfigParser.parseItems(ConfigLoader.generalConfig.getString("transparent-materials"));
-			for(int m=0;m<il.size();m++){
-				GrenadesPlus.transparentMaterials.add(il.get(m).getType());
-			}
 
 			loadDetonator();
 			

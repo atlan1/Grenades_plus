@@ -8,6 +8,8 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 import team.ApiPlus.API.Type.BlockTypeEffectPlusProperty;
 import team.GrenadesPlus.Trigger.TriggerListener;
 import team.GrenadesPlus.Util.Explosive;
+import team.GrenadesPlus.Util.ExplosiveUtils;
+import team.GrenadesPlus.Util.Grenadier;
 import team.GrenadesPlus.Util.PlayerUtils;
 
 public class Placeable extends BlockTypeEffectPlusProperty implements Explosive{
@@ -21,7 +23,6 @@ public class Placeable extends BlockTypeEffectPlusProperty implements Explosive{
 		if(le instanceof SpoutPlayer){
 			TriggerListener.onPlace(this, PlayerUtils.getPlayerBySpoutPlayer((SpoutPlayer)le), new Location(w, x, y, z).getBlock());
 		}
-		
 	}
 	
 	@Override
@@ -31,8 +32,13 @@ public class Placeable extends BlockTypeEffectPlusProperty implements Explosive{
 	}
 	
 	@Override
-	public <T> void performEffects(T... arg0) {
+	public void performEffects(Object... args) {
 		System.out.print("BEEP");
+		ExplosiveUtils.performEffects((Grenadier)args[0], (Explosive)args[1], (Location)args[2]);
+	}
+	
+	public String getPlaceableName() {
+		return ExplosiveUtils.getPlaceableName(this);
 	}
 	
 }

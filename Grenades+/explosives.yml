@@ -10,12 +10,19 @@ Throwable:
         speed: 1.4
         triggers:
             onhit: 
-                args: true
                 activation: onthrow
             time:
                 args: 100
                 activation: onthrow
         effects:
+            explosioneffectperformer:
+                type: explosion
+                args:
+                - size: 1
+                target:
+                    type: explosivelocation
+                    args:
+                    - radius: 1
 Placeable:
     C4:
         design:
@@ -32,8 +39,18 @@ Placeable:
             url: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Sounds/c4_explode1.wav'
             volume: 100
         triggers:
+            redstone:
+                args: true
+                activation: onplace
             detonator:
-                #args: can be left out here since detonator doesn't take any arguments
                 activation: oninteract
         effects:
+            explosioneffectperformer:
+                type: explosion
+                args:
+                - size: 1
+                target: 
+                    type: explosivelocation
+                    args:
+                    - radius: 1
         

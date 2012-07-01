@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -66,7 +66,7 @@ public class GrenadesPlus extends PluginPlus{
 	
 	public static List<Throwable> allThrowables = new ArrayList<Throwable>();
 	public static List<Placeable> allPlaceables = new ArrayList<Placeable>();
-	public static List<Material> transparentMaterials = new ArrayList<Material>();
+	public static Map<Placeable, HashMap<BlockFace, Placeable>> wallDesignPlaceables = new HashMap<Placeable, HashMap<BlockFace, Placeable>>();
 	public static Detonator detonator;
 	public static List<Texture> loadedBlockTextures = new ArrayList<Texture>();
 	

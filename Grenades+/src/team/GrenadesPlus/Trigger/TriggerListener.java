@@ -92,7 +92,7 @@ public class TriggerListener implements Listener {
 		List<ExplosivesTrigger> triggers = ((ArrayList<ExplosivesTrigger>)p.getProperty("TRIGGERS"));
 		for(ExplosivesTrigger t : triggers){
 			ExplosiveTriggerType et = (ExplosiveTriggerType)t.getTriggerType();
-			if(et.getTriggerActivationType().equals(TriggerActivationType.ONPLACE)){
+			if(et.getTriggerActivationType().equals(TriggerActivationType.ONINTERACT)){
 				switch(et){
 					case DETONATOR:
 						break;

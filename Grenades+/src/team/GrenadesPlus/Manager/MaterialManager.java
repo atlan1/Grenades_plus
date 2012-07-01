@@ -1,9 +1,13 @@
 package team.GrenadesPlus.Manager;
 
+import java.util.HashMap;
+
+import org.bukkit.block.BlockFace;
 import org.getspout.spoutapi.block.design.BlockDesign;
 
 import team.ApiPlus.Manager.BlockManager;
 import team.ApiPlus.Manager.ItemManager;
+import team.ApiPlus.Manager.PropertyManager;
 import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.Block.Placeable;
 import team.GrenadesPlus.Block.Designs.DesignType;
@@ -12,32 +16,56 @@ import team.GrenadesPlus.Util.Util;
 
 public class MaterialManager {
 
-	public static Throwable buildNewThrowable(GrenadesPlus plugin ,String name, String texture) {
-		Throwable t = null;
+	public static Throwable buildThrowable(GrenadesPlus plugin ,String name, String texture) {
 		try {
-			t = (Throwable) ItemManager.getInstance().buildItem(plugin, name, texture, "Throwable");
+			Throwable t = (Throwable) ItemManager.getInstance().buildItem(plugin, name, texture, "Throwable");
+			GrenadesPlus.allThrowables.add(t);
+			return t;
 		} catch (Exception e) {
 			Util.warn(e.getMessage());
 			Util.debug(e);
 		}
-		GrenadesPlus.allThrowables.add(t);
-		return t;
+		return null;
 	}
 	
 
-	public static Placeable buildNewPlaceable(GrenadesPlus plugin ,String name, String texture, DesignType des, int width, int heigth, int sprite, int[] used, int hardness) {
-		BlockDesign design = Util.getBlockDesign(des, texture, width, heigth, sprite, used);
-		Placeable p = null;
+	public static Placeable buildPlaceable(GrenadesPlus plugin ,String name, String texture, DesignType des, int width, int heigth, int sprite, int[] used, int hardness) {
 		try {
-			p = (Placeable) BlockManager.getInstance().buildBlock(plugin, name, false, "Placeable");
+			BlockDesign design = DesignType.getBlockDesign(des, texture, width, heigth, sprite, used, BlockFace.UP);
+			
+			Placeable p = (Placeable) BlockManager.getInstance().buildBlock(plugin, name, false, "Placeable");
+			
+			p.setRotate(true);
+			p.setHardness(hardness);
+			p.setBlockDesign(design);
+			GrenadesPlus.allPlaceables.add(p);
+			return p;
 		} catch (Exception e) {
 			Util.warn(e.getMessage());
 			Util.debug(e);
 		}
-		p.setRotate(true);
+		return null;
+	}
+	
+	public static Placeable buildWallDesignPlaceable(Placeable parent, GrenadesPlus plugin ,String name, String texture, DesignType des, int width, int heigth, int sprite, int[] used, int hardness, BlockFace bf) {
+		try {
+		BlockDesign design = DesignType.getBlockDesign(des, texture, width, heigth, sprite, used, bf);
+		
+		Placeable p = (Placeable) BlockManager.getInstance().buildBlock(plugin, name, false, "Placeable");
+		
 		p.setHardness(hardness);
+		p.setRotate(bf==BlockFace.DOWN||bf==BlockFace.UP);
 		p.setBlockDesign(design);
-		GrenadesPlus.allPlaceables.add(p);
+		PropertyManager.copySpecifiedKeys(parent, p, new String[]{"SOUNDURL", "SOUNDVOLUME", "TRIGGERS", "EFFECTS"});
+		if(!GrenadesPlus.wallDesignPlaceables.containsKey(parent))
+			GrenadesPlus.wallDesignPlaceables.put(parent, new HashMap<BlockFace, Placeable>());
+		GrenadesPlus.wallDesignPlaceables.get(parent).put(bf, p);
+		
 		return p;
+		} catch (Exception e) {
+			Util.warn(e.getMessage());
+			Util.debug(e);
+		}
+		return null;
 	}
 }

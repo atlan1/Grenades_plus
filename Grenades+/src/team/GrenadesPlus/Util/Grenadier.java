@@ -2,7 +2,6 @@ package team.GrenadesPlus.Util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 
 import team.ApiPlus.API.Operator;
@@ -12,8 +11,7 @@ import team.GrenadesPlus.Item.Throwable;
 
 public abstract class Grenadier implements Operator{
 	
-	public List<Block> assignedToDetonator = new ArrayList<Block>();
-	public boolean detonated = false;
+	private ArrayList<Block> assignedToDetonator = new ArrayList<Block>();
 	
 	public void assignBlock(Block b){
 		if(!assignedToDetonator.contains(b))
@@ -24,13 +22,14 @@ public abstract class Grenadier implements Operator{
 		if(assignedToDetonator.contains(b))
 			assignedToDetonator.remove(b);
 	}
-
-	public void setDetonated(boolean d){
-		detonated = d;
-	}
 	
-	public boolean isDetonated(){
-		return detonated;
+	@SuppressWarnings("unchecked")
+	public List<Block> getAssignedBlocks(){
+		for(Block b : (ArrayList<Block>)assignedToDetonator.clone())
+			if(!ExplosiveUtils.isPlaceable(b)){
+				assignedToDetonator.remove(b);
+			}
+		return assignedToDetonator;
 	}
 	
 	public abstract void Throw(Throwable t);
@@ -39,5 +38,4 @@ public abstract class Grenadier implements Operator{
 	
 	public abstract void Detonate(Detonator d);
 	
-	public abstract Location getLocation();
 }
