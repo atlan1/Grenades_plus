@@ -64,30 +64,32 @@ public class ConfigLoader {
 		Object[] recipeKeys = recipeConfig.getKeys(false).toArray();
 		for(Object key : recipeKeys){
 			try{
-				YamlConfiguration defaultConfig = new YamlConfiguration();
-				defaultConfig.load(GrenadesPlus.plugin.getResource("recipes.yml"));
-				for(String node : defaultConfig.getConfigurationSection("Grenade").getKeys(false)){
-					if(recipeConfig.get(key+"."+node)==null){
-						Util.warn( "The node '"+node+"' in the recipe for "+key+" is missing or invalid!");
+				if (!key.toString().equalsIgnoreCase("name")) {
+					YamlConfiguration defaultConfig = new YamlConfiguration();
+					defaultConfig.load(GrenadesPlus.plugin.getResource("recipes.yml"));
+					for(String node : defaultConfig.getConfigurationSection("Grenade").getKeys(false)){
+						if(recipeConfig.get(key+"."+node)==null){
+							Util.warn( "The node '"+node+"' in the recipe for "+key+" is missing or invalid!");
+						}
 					}
+					
+					Object cm = null;
+					if(Util.isGrenadesPlusMaterial(key.toString()))cm = Util.getGrenadesPlusMaterial(key.toString());
+					else throw new Exception(GrenadesPlus.PRE + " Recipe output not found: "+key+"! Skipping!");
+					int amount = recipeConfig.getInt(key.toString()+".amount");
+					SpoutItemStack result = null;
+					if(cm instanceof CustomItem){
+						CustomItem ci = (CustomItem)cm;
+						result = new SpoutItemStack(ci, amount);
+					}
+					else if(cm instanceof CustomBlock){
+						CustomBlock cb = (CustomBlock) cm;
+						result = new SpoutItemStack(cb, amount);
+					}
+					List<ItemStack> ingredients = ConfigParser.parseItems(recipeConfig.getString(key+".ingredients"));
+					RecipeManager.RecipeType type = RecipeManager.RecipeType.valueOf(recipeConfig.getString(key+".type").toUpperCase());
+					RecipeManager.addRecipe(type, ingredients, result);
 				}
-				
-				Object cm = null;
-				if(Util.isGrenadesPlusMaterial(key.toString()))cm = Util.getGrenadesPlusMaterial(key.toString());
-				else throw new Exception(GrenadesPlus.PRE + " Recipe output not found: "+key+"! Skipping!");
-				int amount = recipeConfig.getInt(key.toString()+".amount");
-				SpoutItemStack result = null;
-				if(cm instanceof CustomItem){
-					CustomItem ci = (CustomItem)cm;
-					result = new SpoutItemStack(ci, amount);
-				}
-				else if(cm instanceof CustomBlock){
-					CustomBlock cb = (CustomBlock) cm;
-					result = new SpoutItemStack(cb, amount);
-				}
-				List<ItemStack> ingredients = ConfigParser.parseItems(recipeConfig.getString(key+".ingredients"));
-				RecipeManager.RecipeType type = RecipeManager.RecipeType.valueOf(recipeConfig.getString(key+".type").toUpperCase());
-				RecipeManager.addRecipe(type, ingredients, result);
 			}catch (Exception e) {
 				Util.warn("Config Error: " + e.getMessage());
 				Util.debug(e);
@@ -225,6 +227,22 @@ public class ConfigLoader {
 			Util.warn(e.getMessage());
 			Util.debug(e);
 		}
+	}
+
+	public static boolean modify(FileConfiguration con) {
+		String name = con.getString("Name");
+		if(name.equalsIgnoreCase("explosives")) {
+			ConfigLoader.explosivesConfig = con;
+			ConfigLoader.loadThrowables();
+			ConfigLoader.loadPlaceables();
+			return true;
+		}
+		if(name.equalsIgnoreCase("recipes")) {
+			ConfigLoader.recipeConfig = con;
+			ConfigLoader.loadRecipes();
+			return true;
+		}
+		return false;
 	}
 	
 }

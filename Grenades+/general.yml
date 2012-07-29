@@ -10,8 +10,12 @@ loaded-placeables: true
 
 # Enables the debug mode, useful for error finding
 show-debug: false
+
 # Show warnings e.g. if config nodes are missing
 show-warnings: true
+
+# Show some nice little notifications
+show-notifications: true
 
 # Here you can add a default key/button to throw a grenade
 # Available: right, left, middle, all characters, numbers and keys on your keyboard

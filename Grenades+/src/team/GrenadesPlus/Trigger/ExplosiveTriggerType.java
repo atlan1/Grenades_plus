@@ -10,9 +10,10 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.entity.CraftItem;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
 import org.getspout.spoutapi.block.SpoutBlock;
-
 import team.ApiPlus.API.EffectHolder;
 import team.ApiPlus.API.PropertyHolder;
 import team.ApiPlus.API.Trigger.Trigger;
@@ -24,6 +25,7 @@ import team.ApiPlus.Util.Utils;
 import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.Util.Explosive;
 import team.GrenadesPlus.Util.Grenadier;
+import team.GrenadesPlus.Util.LivingGrenadier;
 import team.GrenadesPlus.Util.Util;
 
 public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
@@ -72,7 +74,7 @@ public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 		ExplosiveTriggerType tt = ExplosiveTriggerType.ONHIT;
 		tt.tat = tat;
 		tt.t = t;
-		tt.activation = new TriggerTaskModel(GrenadesPlus.plugin, "repeating", 10, Explosive.class, Grenadier.class, Item.class){
+		tt.activation = new TriggerTaskModel(GrenadesPlus.plugin, "repeating", 1, Explosive.class, Grenadier.class, Item.class){
 			public void run(Task t) {
 				Explosive e = (Explosive) t.getArg(0);
 				Grenadier g = (Grenadier) t.getArg(1);
@@ -90,7 +92,7 @@ public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 				o = i.getLocation().getBlock().getRelative(BlockFace.EAST).getLocation();
 				s = i.getLocation().getBlock().getRelative(BlockFace.SOUTH).getLocation();
 				w = i.getLocation().getBlock().getRelative(BlockFace.WEST).getLocation();
-				if(i.isDead()||(!Utils.isTransparent(n.getBlock())&&Util.distanceSmallerThan(itemLoc, n, 0.1d))||(!Utils.isTransparent(o.getBlock())&&Util.distanceSmallerThan(itemLoc, o, 0.1d))||(!Utils.isTransparent(w.getBlock())&&Util.distanceSmallerThan(itemLoc, w, 0.1d))||(!Utils.isTransparent(s.getBlock())&&Util.distanceSmallerThan(itemLoc, s, 0.1d))||ci.getHandle().onGround){
+				if(i.isDead()||(!Utils.isTransparent(n.getBlock())&&Util.distanceSmallerThan(itemLoc, n, 0.8d))||(!Utils.isTransparent(o.getBlock())&&Util.distanceSmallerThan(itemLoc, o, 0.8d))||(!Utils.isTransparent(w.getBlock())&&Util.distanceSmallerThan(itemLoc, w, 0.8d))||(!Utils.isTransparent(s.getBlock())&&Util.distanceSmallerThan(itemLoc, s, 0.8d))||ci.getHandle().onGround){
 					((TriggerTask)t).getTrigger().triggered(e, g, itemLoc);
 					ExplosivesTrigger.stopTasks(id);
 					ExplosivesTrigger.unregisterItem(i);
@@ -122,7 +124,6 @@ public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 					((TriggerTask)t).getTrigger().triggered(e, g, b.getLocation());
 					ExplosivesTrigger.stopTasks(id);
 					ExplosivesTrigger.unregisterBlock(b);
-					b.setTypeId(0, true);
 				}
 			}
 		};
@@ -136,24 +137,27 @@ public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 		tt.addProperty("RADIUSZ", rad[2]);
 		tt.tat = tat;
 		tt.t = t;
-		tt.activation = new TriggerTaskModel(GrenadesPlus.plugin, "repeating", 10, Explosive.class, Grenadier.class, Block.class){
+		tt.activation = new TriggerTaskModel(GrenadesPlus.plugin, "repeating", 5, Explosive.class, Grenadier.class, Block.class){
 			public void run(Task t) {
 				Block b = (Block) t.getArg(2);
 				Explosive e = (Explosive) t.getArg(0);
 				Grenadier g = (Grenadier) t.getArg(1);
-				
+				ExplosivesTrigger.registerBlock(b);
 				UUID id = ExplosivesTrigger.getID(b);
 				if(((SpoutBlock)b).getCustomBlock()==null){
 					ExplosivesTrigger.stopTasks(id);
 					ExplosivesTrigger.unregisterBlock(b);
 				}
 				ExplosivesTrigger.addTask(id, (TriggerTask)t);
-				if(!Utils.getNearbyEntities(b.getLocation(), ((Integer)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("RADIUSX")), ((Integer)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("RADIUSY")), ((Integer)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("RADIUSZ"))).isEmpty()){
+				List<Entity> ents = new ArrayList<Entity>(Utils.getNearbyEntities(b.getLocation(), ((Integer)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("RADIUSX")), ((Integer)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("RADIUSY")), ((Integer)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("RADIUSZ"))));
+				for(Entity ent : new ArrayList<Entity>(ents)) {
+					if(ent instanceof Item||ent instanceof ExperienceOrb||g instanceof LivingGrenadier&&ent.equals(((LivingGrenadier)g).getLivingEntity()))
+						ents.remove(ent);
+				}
+				if(!ents.isEmpty()){
 					((TriggerTask) t).getTrigger().triggered(e, g, b.getLocation());
-					System.out.print("SHOCK: "+id);
 					ExplosivesTrigger.stopTasks(id);
 					ExplosivesTrigger.unregisterBlock(b);
-					b.setTypeId(0, true);
 				}
 			}
 		};
@@ -172,33 +176,23 @@ public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 				Item i =  (Item)t.getArg(2);
 				Block b =  (Block)t.getArg(3);
 				UUID id = null;
-				if(b!=null){
-				  ExplosivesTrigger.registerBlock(b);
-				  id = ExplosivesTrigger.getID(b);
-				}
-				else if(i!=null){
-					 ExplosivesTrigger.registerItem(i);
-					 id = ExplosivesTrigger.getID(i);
-				}
-				if(((b!=null&&((SpoutBlock)b).getCustomBlock()==null))){
+				if(b==null) {
+					((TriggerTask) t).getTrigger().triggered(e, g, i.getLocation());
 					ExplosivesTrigger.stopTasks(id);
-					ExplosivesTrigger.unregisterBlock(b);
-				}
-				else if(b==null&&i==null){
-					ExplosivesTrigger.stopTasks(id);
-					ExplosivesTrigger.unregisterItem(i);
-
-				}
-				ExplosivesTrigger.addTask(id, (TriggerTask)t);
-				((TriggerTask) t).getTrigger().triggered(e, g, i!=null?i.getLocation():b.getLocation());
-				ExplosivesTrigger.stopTasks(id);
-				if(b!=null){
-					ExplosivesTrigger.unregisterBlock(b);
-					b.setTypeId(0, true);
-				}
-				if(i!=null){
 					ExplosivesTrigger.unregisterItem(i);
 					i.remove();
+				}
+				else if(i==null){
+				  ExplosivesTrigger.registerBlock(b);
+				  id = ExplosivesTrigger.getID(b);
+				  if(((SpoutBlock)b).getCustomBlock()==null){
+						ExplosivesTrigger.stopTasks(id);
+						ExplosivesTrigger.unregisterBlock(b);
+				  }
+				  ExplosivesTrigger.addTask(id, (TriggerTask)t);
+					((TriggerTask) t).getTrigger().triggered(e, g, b.getLocation());
+					ExplosivesTrigger.stopTasks(id);
+				  ExplosivesTrigger.unregisterBlock(b);
 				}
 			}
 		};
@@ -226,7 +220,6 @@ public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 					((TriggerTask) t).getTrigger().triggered(e, g, b.getLocation());
 					ExplosivesTrigger.stopTasks(id);
 					ExplosivesTrigger.unregisterBlock(b);
-					b.setTypeId(0, true);
 				}
 			}
 		};

@@ -13,6 +13,7 @@ import team.ApiPlus.API.Effect.Effect;
 import team.ApiPlus.API.Effect.EntityEffect;
 import team.ApiPlus.API.Effect.LocationEffect;
 import team.ApiPlus.API.Effect.SphereEffect;
+import team.ApiPlus.API.Effect.Default.ExplosionEffect;
 import team.ApiPlus.API.Effect.Default.MoveEffect;
 import team.ApiPlus.Util.Utils;
 import team.GrenadesPlus.Effects.EffectSection;
@@ -71,6 +72,14 @@ public class EffectUtils {
 	public static void performLocationEffect(LocationEffect e, Location grenadier, Location ex) {
 		int radius = (Integer)((EffectSection) e.getEffectTarget()).getProperty("RADIUS");
 		Location[] switched = switchLocation(e, new Location[]{grenadier}, getTargetLocations(getTargetEntities(ex, radius)), new Location[]{ex});
+		boolean isdenied = false;
+		if(e instanceof ExplosionEffect){
+			for(Location s: switched)
+				if(!Utils.tntIsAllowedInRegion(s))
+					isdenied = true;
+			if(isdenied)
+				return;
+		}
 		for(Location s:switched)
 			new SphereEffect(s, radius, e).start();
 	}
@@ -82,7 +91,7 @@ public class EffectUtils {
 		LivingEntity[] les = switchEntity(e, new LivingEntity[]{grenadier}, (LivingEntity[]) targets.toArray());
 		if(e instanceof MoveEffect){
 			for(LivingEntity l:les)
-				e.performEffect(l, grenadier.getEyeLocation()); 
+				e.performEffect(l, grenadier==null?ex:grenadier.getEyeLocation()); 
 		}else
 			for(LivingEntity l:les)
 				e.performEffect(l);

@@ -158,21 +158,22 @@ public class ConfigParser {
     		}
     		TriggerActivationType tat = TriggerActivationType.valueOf(ConfigLoader.explosivesConfig.getString(path+"."+node+".activation").toUpperCase());
     		ExplosivesTrigger trig = new ExplosivesTrigger(t, effectHolder); 
+        	ArrayList<Map<?, ?>> args = new ArrayList<Map<?,?>>(ConfigLoader.explosivesConfig.getMapList(path+"."+node+".args"));
     		switch(t){
 	    		case ONHIT:
 	    			t = ExplosiveTriggerType.ONHIT(trig, tat);
 	    			break;
 	    		case TIME:
-	    			t = ExplosiveTriggerType.TIME(trig, tat, ConfigLoader.explosivesConfig.getInt(path+"."+node+".args"));
+	    			t = ExplosiveTriggerType.TIME(trig, tat, (Integer) searchKeyInMapList(args, "time").get("time"));
 	    			break;
 	    		case DETONATOR:
 	    			t = ExplosiveTriggerType.DETONATOR(trig, tat);
 	    			break;
 	    		case REDSTONE:
-	    			t = ExplosiveTriggerType.REDSTONE(trig, tat, ConfigLoader.explosivesConfig.getBoolean(path+"."+node+".args"));
+	    			t = ExplosiveTriggerType.REDSTONE(trig, tat, (Boolean) searchKeyInMapList(args, "powered").get("powered"));
 	    			break;
 	    		case SHOCK:
-	    			t = ExplosiveTriggerType.SHOCK(trig, tat, parseIntArray(ConfigLoader.explosivesConfig, path+"."+node+".args"));
+	    			t = ExplosiveTriggerType.SHOCK(trig, tat, new int[]{(Integer) searchKeyInMapList(args, "radiusX").get("radiusX"), (Integer) searchKeyInMapList(args, "radiusY").get("radiusY"), (Integer) searchKeyInMapList(args, "radiusZ").get("radiusZ")});
 	    			break;
     		}
     		triggers.add(trig);

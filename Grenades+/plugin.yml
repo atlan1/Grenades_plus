@@ -10,3 +10,27 @@ commands:
         description: Grenades+ commands.
         aliases: [gren+,grenades]
         usage: /grenades+ help - Displays the Help Menu.             
+permissions:
+    grenadesplus.*:
+        description: Give all permissions
+        children:
+            grenadesplus.command.reload: true
+            grenadesplus.command.list: true
+            grenadesplus.detonator: true
+            grenadesplus.throw.all: true
+            grenadesplus.place.all: true
+    grenadesplus.command.reload:
+        description: Give permission for the reload command.
+        default: op
+    grenadesplus.command.list:
+        description: Give permission for the list command.
+        default: true
+    grenadesplus.throw.all:
+        description: Gives permission to throw all guns.
+        default: true   
+    grenadesplus.place.all:
+        description: Gives permission to place all guns.
+        default: true      
+    grenadesplus.detonator:
+        description: Gives permission to use the detonator.
+        default: true          

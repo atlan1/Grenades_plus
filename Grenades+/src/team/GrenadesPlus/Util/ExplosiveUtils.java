@@ -122,12 +122,12 @@ public class ExplosiveUtils {
 		if(b == null) return false;
 		for(Placeable e : GrenadesPlus.allPlaceables){
 			SpoutBlock sb = (SpoutBlock) b;
-			if(sb.getCustomBlock().equals(e)){
+			if(sb.getCustomBlock()!=null&&sb.getCustomBlock().equals(e)){
 				return true;
 			}
 			for(Placeable w : GrenadesPlus.wallDesignPlaceables.get(e).values()){
 				SpoutBlock sb2 = (SpoutBlock) b;
-				if(sb2.getCustomBlock().equals(w)){
+				if(sb2.getCustomBlock()!=null&&sb2.getCustomBlock().equals(w)){
 					return true;
 				}
 			}
@@ -187,27 +187,32 @@ public class ExplosiveUtils {
 	public static void performEffects(Grenadier g, Explosive e, Location explosive){
 		List<Effect> effects = (List<Effect>) ((PropertyHolder)e).getProperty("EFFECTS");
 		LivingEntity grenadierEntity = null;
-		if(g instanceof LivingGrenadier)
+		Location grenadierLoc = null;
+		if(g!=null&&g instanceof LivingGrenadier)
 			grenadierEntity = ((LivingGrenadier) g).getLivingEntity();
+		if(g!=null)
+			grenadierLoc = g.getLocation();
+		else 
+			grenadierLoc = explosive;
 		for(Effect eff : effects){
 			switch(EffectType.getType(eff.getClass())){
 				case EXPLOSION:
-					EffectUtils.performLocationEffect((LocationEffect) eff, g.getLocation(), explosive);
+					EffectUtils.performLocationEffect((LocationEffect) eff, grenadierLoc, explosive);
 					break;
 				case LIGHTNING:
-					EffectUtils.performLocationEffect((LocationEffect) eff, g.getLocation(), explosive);
+					EffectUtils.performLocationEffect((LocationEffect) eff, grenadierLoc, explosive);
 					break;
 				case POTION:
 					EffectUtils.performEntityEffect((EntityEffect) eff, grenadierEntity, explosive);
 					break;
 				case PLACE:
-					EffectUtils.performLocationEffect((LocationEffect) eff, g.getLocation(), explosive);
+					EffectUtils.performLocationEffect((LocationEffect) eff, grenadierLoc, explosive);
 					break;
 				case BREAK:
-					EffectUtils.performLocationEffect((LocationEffect) eff, g.getLocation(), explosive);
+					EffectUtils.performLocationEffect((LocationEffect) eff, grenadierLoc, explosive);
 					break;
 				case PARTICLE:
-					EffectUtils.performLocationEffect((LocationEffect) eff, g.getLocation(), explosive);
+					EffectUtils.performLocationEffect((LocationEffect) eff, grenadierLoc, explosive);
 					break;
 				case MOVE:
 					EffectUtils.performEntityEffect((EntityEffect) eff, grenadierEntity, explosive);

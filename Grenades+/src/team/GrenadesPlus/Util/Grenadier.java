@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 
 import team.ApiPlus.API.Operator;
 import team.GrenadesPlus.Block.Placeable;
@@ -34,7 +35,7 @@ public abstract class Grenadier implements Operator{
 	
 	public abstract void Throw(Throwable t);
 	
-	public abstract void Place(Placeable p);
+	public abstract void Place(Placeable p, Block b, BlockFace bf);
 	
 	public abstract void Detonate(Detonator d);
 	

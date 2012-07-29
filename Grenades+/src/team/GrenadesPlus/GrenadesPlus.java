@@ -1,28 +1,26 @@
 package team.GrenadesPlus;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
-import org.getspout.spoutapi.block.design.Texture;
 import team.ApiPlus.API.PluginPlus;
 import team.ApiPlus.API.Type.BlockType;
 import team.ApiPlus.API.Type.ItemType;
+import team.ApiPlus.Manager.Loadout.Loadout;
+import team.ApiPlus.Manager.Loadout.LoadoutManager;
 import team.GrenadesPlus.API.GrenadesPlusAPI;
 import team.GrenadesPlus.Block.Placeable;
 import team.GrenadesPlus.Controls.KeyType;
@@ -30,7 +28,11 @@ import team.GrenadesPlus.Controls.ThrowBinding;
 import team.GrenadesPlus.Item.Detonator;
 import team.GrenadesPlus.Item.Throwable;
 import team.GrenadesPlus.Manager.ConfigLoader;
+import team.GrenadesPlus.Manager.DBManager;
 import team.GrenadesPlus.Trigger.TriggerListener;
+import team.GrenadesPlus.Util.Metrics;
+import team.GrenadesPlus.Util.Metrics.Graph;
+import team.GrenadesPlus.Util.Util;
 import team.GunsPlus.GunsPlus;
 
 import com.griefcraft.lwc.LWC;
@@ -68,12 +70,18 @@ public class GrenadesPlus extends PluginPlus{
 	public static List<Placeable> allPlaceables = new ArrayList<Placeable>();
 	public static Map<Placeable, HashMap<BlockFace, Placeable>> wallDesignPlaceables = new HashMap<Placeable, HashMap<BlockFace, Placeable>>();
 	public static Detonator detonator;
-	public static List<Texture> loadedBlockTextures = new ArrayList<Texture>();
-	
-	public static List<GrenadesPlusPlayer> GrenadesPlusPlayers = new ArrayList<GrenadesPlusPlayer>();
+	public static Set<GrenadesPlusPlayer> GrenadesPlusPlayers = new HashSet<GrenadesPlusPlayer>();
 	
 	@Override
 	public void onDisable() {
+		for(Block b : new HashSet<Block>(DBManager.blocks.keySet())){
+			try {
+				DBManager.updateBlock(DBManager.blocks.get(b), true);
+			} catch (SQLException e) {
+				Util.warn(e.getMessage());
+				Util.debug(e);
+			}
+		}
 		log.log(Level.INFO, PRE + " version " + getDescription().getVersion()
 				+ " is now disabled.");
 	}
@@ -81,9 +89,9 @@ public class GrenadesPlus extends PluginPlus{
 	@Override
 	public void onEnable() {
 		plugin = this;
-		checkForAPI();
 		ConfigLoader.config();
 //		new VersionChecker(this, ""); TODO: Add rss url
+		metricStart();
 		
 		hook();
 		
@@ -92,6 +100,11 @@ public class GrenadesPlus extends PluginPlus{
 		
 		init();
 		
+		try{
+			DBManager.init();
+		}catch(SQLException e){
+			Util.warn(e.getMessage());
+		}
 		getCommand("grenades+").setExecutor(new CommandEx(this));
 		new GrenadesPlusListener(this);
 		new TriggerListener(this);
@@ -108,6 +121,7 @@ public class GrenadesPlus extends PluginPlus{
 		ConfigLoader.loadThrowables();
 		ConfigLoader.loadPlaceables();
 		ConfigLoader.loadRecipes();
+		Util.printIDs();
 	}
 	
 	private void hook(){
@@ -140,48 +154,50 @@ public class GrenadesPlus extends PluginPlus{
 		}
 	}
 	
-	private void checkForAPI() {
-		PluginManager pm = getServer().getPluginManager();
-		Plugin apiPlugin = pm.getPlugin("ApiPlus");
-		if (apiPlugin == null) {
-			try {
-				File api = new File("plugins/ApiPlus.jar");
-				download( new URL("https://github.com/atlan1/ApiPlus/downloads/ApiPlus.jar"), api);
-				pm.loadPlugin(api);
-				pm.enablePlugin(apiPlugin);
-			} catch (Exception exception) {
-				log.warning(PRE+"could not download ApiPlus! Try to install it manually.");
-				pm.disablePlugin(this);
-			}
-		}
-	}
-
-	public static void download(URL url, File file) throws IOException {
-		if (!file.getParentFile().exists())
-			file.getParentFile().mkdir();
-		if (file.exists())
-			file.delete();
-		file.createNewFile();
-		log.info(PRE+"Starting download of "+file.getName()+" ...");
-		final InputStream in = url.openStream();
-		final OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
-		final byte[] buffer = new byte[1024];
-		int len;
-		while ((len = in.read(buffer)) >= 0) {
-			out.write(buffer, 0, len);
-		}
-		in.close();
-		out.close();
-		log.info(PRE+"Download of "+file.getName()+" finished!");
-	}
-	
 	public GrenadesPlusAPI getAPI() {
 		return api;
 	}
 
 	@Override
-	public void loadConfig(FileConfiguration arg0) {
-		// TODO Auto-generated method stub
-		
+	public boolean loadConfig(FileConfiguration con) {
+		try {
+			return ConfigLoader.modify(con);
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	public void reload() {
+		allPlaceables.clear();
+		allThrowables.clear();
+		detonator = null;
+		wallDesignPlaceables.clear();
+		init();
+	}
+	
+	public void metricStart() {
+		try {
+			Metrics met = new Metrics(this);
+			Graph g = met.createGraph("Explosive Loadouts Used");
+			List<Loadout> list = LoadoutManager.getInstance().getLoadouts(this);
+			if(list == null || list.isEmpty()) {
+				g.addPlotter(new Metrics.Plotter("None") {
+					@Override
+					public int getValue() {
+						return 1;
+					}
+				});
+			} else for(Loadout l : list) {
+				g.addPlotter(new Metrics.Plotter(l.getName()) {
+					@Override
+					public int getValue() {
+						return 1;
+					}
+				});
+			}
+			met.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

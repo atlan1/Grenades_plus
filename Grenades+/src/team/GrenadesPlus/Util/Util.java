@@ -1,6 +1,8 @@
 package team.GrenadesPlus.Util;
 
 import java.util.List;
+import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -10,21 +12,50 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
+import org.getspout.spoutapi.material.item.GenericCustomItem;
 import org.getspout.spoutapi.sound.SoundManager;
 
 import team.ApiPlus.API.Effect.EffectType;
 import team.ApiPlus.API.Effect.EntityEffect;
 import team.ApiPlus.Util.Utils;
 import team.GrenadesPlus.GrenadesPlus;
+import team.GrenadesPlus.Block.Placeable;
 import team.GrenadesPlus.Effects.EffectSection;
+import team.GrenadesPlus.Manager.ConfigLoader;
+import team.GrenadesPlus.Item.Throwable;
 
 public class Util {
 	
-	public static boolean distanceSmallerThan(final Location l1, final Location l2, double distance){
-		if(l1.toVector().distance(l2.toVector())<distance){
-			return true;
+	public static void printIDs() {
+		if (ConfigLoader.generalConfig.getBoolean("id-info-throwables", true)) {
+			GrenadesPlus.log.log(Level.INFO, GrenadesPlus.PRE
+					+ " ------------  ID's of throwable explosives: -----------------");
+			if (GrenadesPlus.allThrowables.isEmpty())
+				GrenadesPlus.log.log(Level.INFO, "EMPTY");
+			for (Throwable gun : GrenadesPlus.allThrowables) {
+				GrenadesPlus.log.log(Level.INFO, "ID of " + gun.getName() + ": "
+						+ new SpoutItemStack((GenericCustomItem)gun).getTypeId() + ":"
+						+ new SpoutItemStack((GenericCustomItem)gun).getDurability());
+			}
 		}
-		return false;
+		if (ConfigLoader.generalConfig.getBoolean("id-info-placeables", true)) {
+			GrenadesPlus.log.log(Level.INFO, GrenadesPlus.PRE
+					+ " ------------  ID's of placeable explosives: -----------------");
+			if (GrenadesPlus.allPlaceables.isEmpty())
+				GrenadesPlus.log.log(Level.INFO, "EMPTY");
+			for (Placeable gun : GrenadesPlus.allPlaceables) {
+				GrenadesPlus.log.log(Level.INFO, "ID of " + gun.getName() + ": "
+						+ new SpoutItemStack(gun).getTypeId() + ":"
+						+ new SpoutItemStack(gun).getDurability());
+			}
+		}
+		if (GrenadesPlus.detonator != null) {
+			GrenadesPlus.log.info(GrenadesPlus.PRE+"----------- ID of the Detonator: ----------");
+			GrenadesPlus.log.info(new SpoutItemStack(GrenadesPlus.detonator).getTypeId()+":"+new SpoutItemStack(GrenadesPlus.detonator).getDurability());
+		}
+	}
+	public static boolean distanceSmallerThan(final Location l1, final Location l2, double distance){
+		return l1.toVector().distance(l2.toVector())<distance;
 	}
 	
 	public static boolean distanceBiggerThan(final Location l1, final Location l2, double distance){

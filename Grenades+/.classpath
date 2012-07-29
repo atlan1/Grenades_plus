@@ -2,12 +2,14 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/Plugins Test Server/cb.jar"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/Plugins Test Server/plugins/worldguard-5.5.2.jar"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/Plugins Test Server/plugins/LWC.jar"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/Plugins Test Server/plugins/FurnaceAPI.jar"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/Plugins Test Server/plugins/GunsPlus.jar"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/Plugins Test Server/plugins/ApiPlus.jar"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsOnMyOwn/lib/SpoutPluginAPI.jar"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/cb.jar"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/ApiPlus.jar"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/FurnaceAPI.jar"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/GunsPlus.jar"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/LWC.jar"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/MachinaRedstoneBridge.jar"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/SpoutPlugin.jar"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/worldguard-5.5.2.jar"/>
+	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/ShowCaseStandalone.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

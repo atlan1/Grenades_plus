@@ -14,6 +14,7 @@ import team.ApiPlus.API.EffectHolder;
 import team.ApiPlus.API.Trigger.Trigger;
 import team.ApiPlus.API.Trigger.TriggerTask;
 import team.ApiPlus.API.Trigger.TriggerType;
+import team.ApiPlus.Util.Task;
 
 public class ExplosivesTrigger implements Trigger{
 
@@ -37,14 +38,17 @@ public class ExplosivesTrigger implements Trigger{
 	}
 
 	@Override
-	public void triggered(Object... args) {
-		TriggerTask tt = getTriggerType().triggeredTask().createTask(this, args);
-		tt.startTaskModel();
+	public Task triggered(Object... args) {
+		TriggerTask t = getTriggerType().triggeredTask().createTask(this, args);
+		t.startTaskModel();
+		return t;
 	}
 	
 	@Override
-	public void activate(Object... args) {
-		getTriggerType().activationTask().createTask(this, args).startTaskModel();
+	public Task activate(Object... args) {
+		TriggerTask t = getTriggerType().activationTask().createTask(this, args);
+		t.startTaskModel();
+		return t;
 	}
 	
 	public static void registerItem(Item i) {

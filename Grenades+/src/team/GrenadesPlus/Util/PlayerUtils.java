@@ -3,20 +3,49 @@ package team.GrenadesPlus.Util;
 import net.minecraft.server.Packet18ArmAnimation;
 import net.minecraft.server.WorldServer;
 
+import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.inventory.SpoutItemStack;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.GrenadesPlusPlayer;
-import team.GunsPlus.GunsPlus;
-import team.GunsPlus.Util.Util;
+import team.GrenadesPlus.Block.Placeable;
+import team.GrenadesPlus.Item.Throwable;
 
 public class PlayerUtils {
 	
-
+	public static boolean hasPermissionToThrow(SpoutPlayer sp, Throwable t) {
+		if(!sp.hasPermission("grenadesplus.throw.all")){
+			if(!sp.hasPermission("grenadesplus.throw."+t.getName().replace(" ", "_"))){
+				sendNotification(sp, "Permission", ChatColor.RED+"Denied", new SpoutItemStack(t), 1500);
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static boolean hasPermissionToPlace(SpoutPlayer sp, Placeable p) {
+		if(!sp.hasPermission("grenadesplus.place.all")){
+			if(!sp.hasPermission("grenadesplus.place."+p.getName().replace(" ", "_"))){
+				sendNotification(sp, "Permission", ChatColor.RED+"Denied", new SpoutItemStack(p), 1500);
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static boolean hasPermissionForDetonator(SpoutPlayer sp) {
+		if(sp.hasPermission("grenadesplus.detonator"))
+			return true;
+		else
+			sendNotification(sp, "Permission", ChatColor.RED+"Denied", new SpoutItemStack(GrenadesPlus.detonator), 1500);
+		return false;
+	}
+	
 	public static GrenadesPlusPlayer getPlayerBySpoutPlayer(SpoutPlayer sp){
 		for(GrenadesPlusPlayer gp : GrenadesPlus.GrenadesPlusPlayers){
 			if(gp.getPlayer().equals(sp)){
@@ -45,7 +74,7 @@ public class PlayerUtils {
 
 	public static void sendNotification(SpoutPlayer sp, String title,
 			String text, ItemStack icon, int duration) {
-		if(!GunsPlus.notifications) return;
+		if(!GrenadesPlus.notifications) return;
 		if(title.length()>26){
 			Util.warn("Too long notification. Check your gun and addition names.");
 			title = title.replace(title.substring(25, title.length()-1),"");

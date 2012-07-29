@@ -1,54 +1,94 @@
 # Here you can configure your own explosives!
 # Look at the examples to see how it works.
+# For more information visit the help pages on BukkitDev!
 
+# In this section you define explosives that can be thrown by pressing the throw key defined in general.yml
 Throwable:
+    # The first thing to do is to give your explosive a name
     Grenade:
+        # You also need to give it a texture like that:
         texture: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Textures/itemGrenade.png'
+        # And of course some nice sound; you can also change the volume 
         sound:
             url: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Sounds/stungrenade.ogg'
             volume: 100
+        # This is the speed of your throwable explosive (1.0 would be the normal speed, since this is a factor)
         speed: 1.4
+        # In the triggers section you are goin to define when the explosive is armed and triggered
         triggers:
-            onhit: 
+            # This is the trigger type; Available are: onhit, time
+            onhit:
+                # Each trigger type has also a activation type, means when the trigger starts checking if it is triggered :D
+                # Currently only "onthrow" available
                 activation: onthrow
             time:
-                args: 100
+                # Some trigger types have also arguments; as you can see this trigger is going to detonate the explosive after 100 ticks (5sec)
+                args: 
+                - time: 100
                 activation: onthrow
+        # This is the most important section, because this defines what the explosive should do if it is triggered
+        # I'll not explain all the different types and targets here. Visit our BukkitDev page to learn more about effects.
         effects:
-            explosioneffectperformer:
+            # At first a name of your choice 
+            Get_those_creepers_down:
+                # The type of the effect 
                 type: explosion
+                # Here go all the arguments of the effect
                 args:
-                - size: 1
+                - size: 3
+                # Under this node you set the target of the effect
                 target:
+                    # Again there are different types of targets you can choose
                     type: explosivelocation
+                    # And here you can have args aswell
                     args:
                     - radius: 1
+# In this section you define explosives that can be placed (blocks)                    
 Placeable:
+    # First you cool explosive name
     C4:
+        # Here you define what your block should look like!
         design:
+            # Currently there are three types of design: cube, step, pyramid
             type: step
+            # Sets if the blocks should rotate to look like they are attached to walls 
             attach-to-walls: true
+            # This is the texture section (If you are new just change the url because the other options are very advanced)
             texture:
-                url: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Textures/C4.png'
+                # Of course the url of your texture
+                url: 'https://dl.dropbox.com/u/44243469/Grenades%2B/Textures/C4.png'
+                # Here you put the width and height of your texture
                 width: 16
                 height: 16
+                # And this is how width ONE subtexture is.
+                # This way you can make one big texture with many subtextures like terrain.png
                 sprite: 16
+                # This node is for setting what of the design should have what texture
+                # The id is incremented from the left to the right and from the top to the
+                # bottom of your texture; id for the first subtexture is 0 ...
                 used-ids: 0, 0, 0, 0, 0, 0
+        # This is the hardness of your block -> how long it takes to mine it
         hardness: 20
+        # Same as in "Throwables"
         sound:
             url: 'http://dl.dropbox.com/u/44243469/GrenadesPack/Sounds/c4_explode1.wav'
             volume: 100
+        # Same as above but there are other trigger and activation types:
+        # Trigger: redstone, detonator(can be defined in general.yml), shock(for landmines), time
+        # Activation: onplace, oninteract
         triggers:
             redstone:
-                args: true
+                args:
+                - powered: true
                 activation: onplace
             detonator:
                 activation: oninteract
+        # Effects are exactly the same as above in "Throwables"
         effects:
-            explosioneffectperformer:
+            House_Destructor:
                 type: explosion
                 args:
-                - size: 1
+                - size: 5
                 target: 
                     type: explosivelocation
                     args:
