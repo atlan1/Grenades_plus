@@ -37,7 +37,7 @@ public class DBManager {
 		}
 	}
 	
-	public static void init() throws SQLException {System.out.print("intialising db");
+	public static void init() throws SQLException {
 		db = new Db(GrenadesPlus.plugin, GrenadesPlus.plugin.getDataFolder() + "/data.db");
 
 		db.query("CREATE TABLE IF NOT EXISTS `placeables` (`ID` INT AUTO_INCREMENT PRIMARY KEY, `P` TEXT , `W` TEXT, `X` INT, `Y` INT, `Z` INT, `I` BOOL)");

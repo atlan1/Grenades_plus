@@ -91,15 +91,12 @@ public class GrenadesPlus extends PluginPlus{
 		plugin = this;
 		ConfigLoader.config();
 //		new VersionChecker(this, ""); TODO: Add rss url
-		metricStart();
-		
-		hook();
-		
 		this.registerBlockTypes(customBlockTypes);
 		this.registerItemTypes(customItemTypes);
-		
+		hook();
 		init();
-		
+		registerPluginPlus();
+		Util.printIDs();
 		try{
 			DBManager.init();
 		}catch(SQLException e){
@@ -110,9 +107,7 @@ public class GrenadesPlus extends PluginPlus{
 		new TriggerListener(this);
 		new ThrowBinding(this, throwType);
 		api = new GrenadesPlusAPI(this);
-		
-		
-		
+		metricStart();
 		log.log(Level.INFO, PRE + " version " + getDescription().getVersion()+ " is now enabled.");
 	}
 	
@@ -121,7 +116,6 @@ public class GrenadesPlus extends PluginPlus{
 		ConfigLoader.loadThrowables();
 		ConfigLoader.loadPlaceables();
 		ConfigLoader.loadRecipes();
-		Util.printIDs();
 	}
 	
 	private void hook(){
