@@ -4,7 +4,7 @@ version: 1.0
 depend: [Spout, ApiPlus]
 authors: [SirTyler, Atlan1]
 description: >
-             Grenades+ - Grenades - make creepers go boom!
+             Grenades+ - Kill Like Creepers!
 commands:
     grenades+:
         description: Grenades+ commands.
