@@ -32,6 +32,7 @@ public enum DesignType {
 
 	public static BlockDesign getBlockDesign(DesignType des, String texture, int width, int heigth, int sprite, int[] usedIds, BlockFace bf) throws Exception {
 		if(usedIds.length<des.getFaces()) throw new Exception("Too low used texture ids, for design "+des.name().toLowerCase()+"; req. number of ids: "+des.getFaces());
+		if(width%2!=0||heigth%2!=0||sprite%2!=0) throw new Exception("With, Heigth and Sprite size of a texture must be multiples of 2!");
 			switch(des){
 				case CUBE:
 					Texture tex = new Texture(GrenadesPlus.plugin, texture, width, heigth, sprite);
