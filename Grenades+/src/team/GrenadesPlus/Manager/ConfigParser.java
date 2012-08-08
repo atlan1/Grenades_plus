@@ -186,22 +186,32 @@ public class ConfigParser {
     	List<Effect> effects = new ArrayList<Effect>();
     	if(!ConfigLoader.explosivesConfig.isConfigurationSection(path)||ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false).isEmpty()) return effects;
     	for(String effect_: ConfigLoader.explosivesConfig.getConfigurationSection(path).getKeys(false)){
-    		String newpath=path+"."+effect_;
-    		String type =  ConfigLoader.explosivesConfig.getString(newpath+".type");
-    		EffectType efftyp = EffectType.valueOf(type.toUpperCase());
-    		EffectTargetImpl efftar = buildEffectTarget(newpath+".target");
-    		if(Util.isAllowedWithEffectTarget(efftyp, efftar))
-    			effects.add(buildEffect(efftar, efftyp, newpath));
-    		else throw new Exception("The effect type "+efftyp.toString().toLowerCase()+" is not allowed to have the target "+efftar);
+    		try{
+	    		String newpath=path+"."+effect_;
+	    		String type =  ConfigLoader.explosivesConfig.getString(newpath+".type");
+	    		EffectType efftyp = EffectType.valueOf(type.toUpperCase());
+	    		EffectTargetImpl efftar = buildEffectTarget(newpath+".target");
+	    		if(Util.isAllowedWithEffectTarget(efftyp, efftar))
+	    			effects.add(buildEffect(efftar, efftyp, newpath));
+	    		else throw new Exception("The effect type "+efftyp.toString().toLowerCase()+" is not allowed to have the target "+efftar);
+    		}catch(Exception e){
+    			Util.warn("Something went wrong during loading effect "+effect_+":");
+    			Util.warn(e.getMessage());
+    			Util.debug(e);
+    			continue;
+    		}
     	}
     	return effects;
     }
     
-    private static EffectTargetImpl buildEffectTarget(String path) {
+    private static EffectTargetImpl buildEffectTarget(String path) throws Exception {
     	ArrayList<Map<?, ?>> args = new ArrayList<Map<?,?>>(ConfigLoader.explosivesConfig.getMapList(path+".args"));
     	EffectTargetType ett =  EffectTargetType.valueOf(ConfigLoader.explosivesConfig.getString(path+".type").toUpperCase());
     	EffectTargetImpl efftar = new EffectTargetImpl(ett);
     	if(args.isEmpty()||args==null) return efftar;
+    	Map<?, ?> map = searchKeyInMapList(args, "radius");
+    	if(map==null)
+    		throw new Exception("Argument 'radius' missing!");
     	switch(efftar.getType()){
 	    	case TARGETLOCATION:
 	    		efftar.addProperty("RADIUS", searchKeyInMapList(args, "radius").get("radius"));
@@ -219,15 +229,15 @@ public class ConfigParser {
     	return efftar;
     }
     
-    private static Effect buildEffect(EffectTargetImpl es, EffectType t, String path) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+    private static Effect buildEffect(EffectTargetImpl es, EffectType t, String path) throws Exception{
     	Effect e = null;
     	ArrayList<Map<?, ?>> args = new ArrayList<Map<?,?>>(ConfigLoader.explosivesConfig.getMapList(path+".args"));
+    	if(args.isEmpty()){
+    		throw new Exception("Arguments missing for effect type "+t+"!");
+    	}
     		switch(t){
 		    	case EXPLOSION:
 		    		e =  EffectManager.getInstance().buildEffect(t.getEffectName(), searchKeyInMapList(args, "size").get("size")); 
-		    		break;
-		    	case LIGHTNING:
-		    		e =  EffectManager.getInstance().buildEffect(t.getEffectName()); 
 		    		break;
 		    	case MOVE:
 		    		e =  EffectManager.getInstance().buildEffect(t.getEffectName(), searchKeyInMapList(args, "speed").get("speed"), searchKeyInMapList(args, "direction").get("direction"));
@@ -249,6 +259,9 @@ public class ConfigParser {
 		    		break;
 		    	case BURN:
 		    		e =  EffectManager.getInstance().buildEffect(t.getEffectName(), searchKeyInMapList(args, "duration").get("duration"));
+		    		break;
+		    	default:
+		    		e =  EffectManager.getInstance().buildEffect(t.getEffectName()); 
 		    		break;
     	}
     		e.setEffectTarget(es);
