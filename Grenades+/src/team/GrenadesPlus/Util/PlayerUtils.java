@@ -66,10 +66,7 @@ public class PlayerUtils {
 	
 	public static boolean hasSpoutcraft(Player p) {
 		SpoutPlayer sp = SpoutManager.getPlayer(p);
-		if (sp.isSpoutCraftEnabled()) {
-			return true;
-		}
-		return false;
+		return sp.isSpoutCraftEnabled();
 	}
 
 	public static void sendNotification(SpoutPlayer sp, String title,

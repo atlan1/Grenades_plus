@@ -71,7 +71,6 @@ public class EffectUtils {
 	
 	public static void performLocationEffect(LocationEffect e, Location grenadier, Location ex) {
 		int radius = (Integer)(((EffectTargetImpl)e.getEffectTarget()).getProperty("RADIUS"));
-		System.out.print(e.toString()+"; "+radius);
 		Location[] switched = switchLocation(e, new Location[]{grenadier}, getTargetLocations(getTargetEntities(ex, radius)), new Location[]{ex});
 		boolean isdenied = false;
 		if(e instanceof ExplosionEffect){

@@ -19,6 +19,7 @@ import team.ApiPlus.API.Effect.LocationEffect;
 import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.Block.Placeable;
 import team.GrenadesPlus.Item.Throwable;
+import team.GrenadesPlus.Block.Designs.DesignType;;
 
 public class ExplosiveUtils {
 	
@@ -108,12 +109,13 @@ public class ExplosiveUtils {
 			if(sis.getDurability()==i.getDurability()&&sis.getTypeId()==i.getTypeId()){
 				return true;
 			}
-			for(Placeable w : GrenadesPlus.wallDesignPlaceables.get(e).values()){
-				SpoutItemStack sis2 = new SpoutItemStack(w);
-				if(sis2.getDurability()==i.getDurability()&&sis2.getTypeId()==i.getTypeId()){
-					return true;
+			if(((DesignType)e.getProperty("DESIGN")).isAttaching())
+				for(Placeable w : GrenadesPlus.wallDesignPlaceables.get(e).values()){
+					SpoutItemStack sis2 = new SpoutItemStack(w);
+					if(sis2.getDurability()==i.getDurability()&&sis2.getTypeId()==i.getTypeId()){
+						return true;
+					}
 				}
-			}
 		}
 		return false;
 	}
@@ -125,12 +127,13 @@ public class ExplosiveUtils {
 			if(sb.getCustomBlock()!=null&&sb.getCustomBlock().equals(e)){
 				return true;
 			}
-			for(Placeable w : GrenadesPlus.wallDesignPlaceables.get(e).values()){
-				SpoutBlock sb2 = (SpoutBlock) b;
-				if(sb2.getCustomBlock()!=null&&sb2.getCustomBlock().equals(w)){
-					return true;
+			if(((DesignType)e.getProperty("DESIGN")).isAttaching())
+				for(Placeable w : GrenadesPlus.wallDesignPlaceables.get(e).values()){
+					SpoutBlock sb2 = (SpoutBlock) b;
+					if(sb2.getCustomBlock()!=null&&sb2.getCustomBlock().equals(w)){
+						return true;
+					}
 				}
-			}
 		}
 		return false;
 	}

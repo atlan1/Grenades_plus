@@ -52,7 +52,7 @@ public class GrenadesPlusListener implements Listener{
 	
 	@EventHandler
 	public void onPlayerRightClickWithDetonator(PlayerInteractEvent e){
-		if(PlayerUtils.hasSpoutcraft(e.getPlayer())){
+		if(!PlayerUtils.hasSpoutcraft(e.getPlayer())){
 			return;
 		}
 		GrenadesPlusPlayer gp = PlayerUtils.getPlayerBySpoutPlayer((SpoutPlayer) e.getPlayer());
