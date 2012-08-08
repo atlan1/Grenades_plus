@@ -21,6 +21,7 @@ import team.ApiPlus.API.Type.BlockType;
 import team.ApiPlus.API.Type.ItemType;
 import team.ApiPlus.Manager.Loadout.Loadout;
 import team.ApiPlus.Manager.Loadout.LoadoutManager;
+import team.ApiPlus.Util.VersionChecker;
 import team.GrenadesPlus.API.GrenadesPlusAPI;
 import team.GrenadesPlus.Block.Placeable;
 import team.GrenadesPlus.Controls.KeyType;
@@ -90,7 +91,7 @@ public class GrenadesPlus extends PluginPlus{
 	public void onEnable() {
 		plugin = this;
 		ConfigLoader.config();
-//		new VersionChecker(this, ""); TODO: Add rss url
+		new VersionChecker(this, "http://dev.bukkit.org/server-mods/grenadesplus/files.rss");
 		this.registerBlockTypes(customBlockTypes);
 		this.registerItemTypes(customItemTypes);
 		hook();
