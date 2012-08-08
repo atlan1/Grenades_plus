@@ -15,7 +15,8 @@ import team.ApiPlus.API.Effect.EffectType;
 import team.ApiPlus.Manager.EffectManager;
 import team.GrenadesPlus.Block.Placeable;
 import team.GrenadesPlus.Controls.KeyType;
-import team.GrenadesPlus.Effects.EffectSection;
+import team.GrenadesPlus.Effects.EffectTargetType;
+import team.GrenadesPlus.Effects.EffectTargetImpl;
 import team.GrenadesPlus.Item.Throwable;
 import team.GrenadesPlus.Trigger.ExplosiveTriggerType;
 import team.GrenadesPlus.Trigger.ExplosivesTrigger;
@@ -188,33 +189,37 @@ public class ConfigParser {
     		String newpath=path+"."+effect_;
     		String type =  ConfigLoader.explosivesConfig.getString(newpath+".type");
     		EffectType efftyp = EffectType.valueOf(type.toUpperCase());
-    		EffectSection effsec = buildEffectTarget(newpath+".target");
-    		if(Util.isAllowedInEffectSection(efftyp, effsec))
-    			effects.add(buildEffect(effsec, efftyp, newpath));
-    		else throw new Exception("The effect type "+efftyp.toString().toLowerCase()+" is not allowed to have the target "+effsec);
+    		EffectTargetImpl efftar = buildEffectTarget(newpath+".target");
+    		if(Util.isAllowedWithEffectTarget(efftyp, efftar))
+    			effects.add(buildEffect(efftar, efftyp, newpath));
+    		else throw new Exception("The effect type "+efftyp.toString().toLowerCase()+" is not allowed to have the target "+efftar);
     	}
     	return effects;
     }
     
-    private static EffectSection buildEffectTarget(String path) {
+    private static EffectTargetImpl buildEffectTarget(String path) {
     	ArrayList<Map<?, ?>> args = new ArrayList<Map<?,?>>(ConfigLoader.explosivesConfig.getMapList(path+".args"));
-    	EffectSection effsec = EffectSection.valueOf(ConfigLoader.explosivesConfig.getString(path+".type").toUpperCase());
-    	if(args.isEmpty()||args==null) return effsec;
-    	switch(effsec){
+    	EffectTargetType ett =  EffectTargetType.valueOf(ConfigLoader.explosivesConfig.getString(path+".type").toUpperCase());
+    	EffectTargetImpl efftar = new EffectTargetImpl(ett);
+    	if(args.isEmpty()||args==null) return efftar;
+    	switch(efftar.getType()){
 	    	case TARGETLOCATION:
-	    		effsec.addProperty("RADIUS", searchKeyInMapList(args, "radius").get("radius"));
+	    		efftar.addProperty("RADIUS", searchKeyInMapList(args, "radius").get("radius"));
 	    		break;
 	    	case EXPLOSIVELOCATION:
-	    		effsec.addProperty("RADIUS", searchKeyInMapList(args, "radius").get("radius"));
+	    		efftar.addProperty("RADIUS", searchKeyInMapList(args, "radius").get("radius"));
 	    		break;
 	    	case GRENADIERLOCATION:
-	    		effsec.addProperty("RADIUS", searchKeyInMapList(args, "radius").get("radius"));
+	    		efftar.addProperty("RADIUS", searchKeyInMapList(args, "radius").get("radius"));
+	    		break;
+	    	case TARGETENTITY:
+	    		efftar.addProperty("RADIUS", searchKeyInMapList(args, "radius").get("radius"));
 	    		break;
     	}
-    	return effsec;
+    	return efftar;
     }
     
-    private static Effect buildEffect(EffectSection es, EffectType t, String path) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+    private static Effect buildEffect(EffectTargetImpl es, EffectType t, String path) throws IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
     	Effect e = null;
     	ArrayList<Map<?, ?>> args = new ArrayList<Map<?,?>>(ConfigLoader.explosivesConfig.getMapList(path+".args"));
     		switch(t){

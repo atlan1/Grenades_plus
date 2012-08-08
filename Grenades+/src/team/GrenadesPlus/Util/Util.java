@@ -20,7 +20,7 @@ import team.ApiPlus.API.Effect.EntityEffect;
 import team.ApiPlus.Util.Utils;
 import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.Block.Placeable;
-import team.GrenadesPlus.Effects.EffectSection;
+import team.GrenadesPlus.Effects.EffectTargetImpl;
 import team.GrenadesPlus.Manager.ConfigLoader;
 import team.GrenadesPlus.Item.Throwable;
 
@@ -167,8 +167,8 @@ public class Util {
 		SM.playGlobalCustomSoundEffect(plugin, url, false, l, 40, volume);
 	}
 
-	public static boolean isAllowedInEffectSection(EffectType efftyp, EffectSection effsec) {
-		switch(effsec){
+	public static boolean isAllowedWithEffectTarget(EffectType efftyp, EffectTargetImpl efftar) {
+		switch(efftar.getType()){
 			case EXPLOSIVELOCATION:
 				if(efftyp.getEffectClass().isAssignableFrom(EntityEffect.class)){
 					return false;

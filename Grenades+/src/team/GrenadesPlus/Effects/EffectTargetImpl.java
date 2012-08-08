@@ -6,10 +6,15 @@ import java.util.Map;
 import team.ApiPlus.API.PropertyHolder;
 import team.ApiPlus.API.Effect.EffectTarget;
 
-public enum EffectSection implements EffectTarget, PropertyHolder{
-	EXPLOSIVELOCATION(), TARGETENTITY(), TARGETLOCATION(), GRENADIER(), GRENADIERLOCATION();
+public class EffectTargetImpl implements EffectTarget, PropertyHolder{
+
+	private EffectTargetType ett;
 	
+	public EffectTargetImpl(EffectTargetType ett){
+		this.ett = ett;
+	}
 	private Map<String, Object> properties = new HashMap<String, Object>();
+
 	
 	@Override
 	public Object getProperty(String id) {
@@ -29,7 +34,7 @@ public enum EffectSection implements EffectTarget, PropertyHolder{
 
 	@Override
 	public void setProperties(Map<String, Object> properties) {
-		properties = new HashMap<String, Object>(properties);
+		this.properties = new HashMap<String, Object>(properties);
 	}
 
 	@Override
@@ -48,5 +53,9 @@ public enum EffectSection implements EffectTarget, PropertyHolder{
 	public void setProperty(String id, Object property) {
 		addProperty(id, property);
 		editProperty(id, property);
+	}
+	
+	public EffectTargetType getType() {
+		return ett;
 	}
 }

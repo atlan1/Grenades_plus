@@ -52,6 +52,9 @@ public class GrenadesPlusListener implements Listener{
 	
 	@EventHandler
 	public void onPlayerRightClickWithDetonator(PlayerInteractEvent e){
+		if(PlayerUtils.hasSpoutcraft(e.getPlayer())){
+			return;
+		}
 		GrenadesPlusPlayer gp = PlayerUtils.getPlayerBySpoutPlayer((SpoutPlayer) e.getPlayer());
 		if(ExplosiveUtils.isDetonator(gp.getPlayer().getItemInHand())&&e.getAction().equals(Action.RIGHT_CLICK_BLOCK)||e.getAction().equals(Action.RIGHT_CLICK_AIR)){
 			if(!PlayerUtils.hasPermissionForDetonator(gp.getPlayer())) return;

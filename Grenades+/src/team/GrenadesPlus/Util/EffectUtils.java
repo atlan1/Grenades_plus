@@ -16,13 +16,13 @@ import team.ApiPlus.API.Effect.SphereEffect;
 import team.ApiPlus.API.Effect.Default.ExplosionEffect;
 import team.ApiPlus.API.Effect.Default.MoveEffect;
 import team.ApiPlus.Util.Utils;
-import team.GrenadesPlus.Effects.EffectSection;
+import team.GrenadesPlus.Effects.EffectTargetImpl;
 
 public class EffectUtils {
 	
 	private static Location[] switchLocation(Effect e, Location[] grenadier, Location[] target, Location[] ex){
 		Location[] ret = null;
-		switch ((EffectSection)e.getEffectTarget()) {
+		switch (((EffectTargetImpl)e.getEffectTarget()).getType()) {
 			case TARGETLOCATION:
 				ret = target;
 				break;
@@ -43,7 +43,7 @@ public class EffectUtils {
 	}
 	
 	private static LivingEntity[] switchEntity(Effect e, LivingEntity[] grenadier, LivingEntity[] targets){
-		switch((EffectSection)e.getEffectTarget()){
+		switch(((EffectTargetImpl)e.getEffectTarget()).getType()){
 			case TARGETENTITY:
 				return targets;
 			case GRENADIER:
@@ -70,7 +70,8 @@ public class EffectUtils {
 	}
 	
 	public static void performLocationEffect(LocationEffect e, Location grenadier, Location ex) {
-		int radius = (Integer)((EffectSection) e.getEffectTarget()).getProperty("RADIUS");
+		int radius = (Integer)(((EffectTargetImpl)e.getEffectTarget()).getProperty("RADIUS"));
+		System.out.print(e.toString()+"; "+radius);
 		Location[] switched = switchLocation(e, new Location[]{grenadier}, getTargetLocations(getTargetEntities(ex, radius)), new Location[]{ex});
 		boolean isdenied = false;
 		if(e instanceof ExplosionEffect){
@@ -85,9 +86,8 @@ public class EffectUtils {
 	}
 
 	public static void performEntityEffect(EntityEffect e, LivingEntity grenadier, Location ex) {
-		int radius = (Integer)((EffectSection) e.getEffectTarget()).getProperty("RADIUS");
+		int radius = (Integer)((EffectTargetImpl)e.getEffectTarget()).getProperty("RADIUS");
 		List<LivingEntity> targets = Arrays.asList(getTargetEntities(ex, radius));
-		if(targets.contains(grenadier)&&(EffectSection)e.getEffectTarget() != EffectSection.GRENADIER) return;
 		LivingEntity[] les = switchEntity(e, new LivingEntity[]{grenadier}, (LivingEntity[]) targets.toArray());
 		if(e instanceof MoveEffect){
 			for(LivingEntity l:les)
