@@ -223,6 +223,12 @@ public class ExplosiveUtils {
 				case BURN:
 					EffectUtils.performEntityEffect((EntityEffect) eff, grenadierEntity, explosive);
 					break;
+			case CUSTOM:
+				break;
+			case SPAWN:
+				break;
+			default:
+				break;
 			}
 		}
 	}

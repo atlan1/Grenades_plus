@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/cb.jar"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/ApiPlus.jar"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/FurnaceAPI.jar"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/GunsPlus.jar"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/LWC.jar"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/MachinaRedstoneBridge.jar"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/SpoutPlugin.jar"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/worldguard-5.5.2.jar"/>
-	<classpathentry kind="lib" path="I:/Benutzer/Robert/Spiele/Minecraft/Server/PluginsServer/plugins/ShowCaseStandalone.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/Program Files (x86)/imports/spoutplugin-1.4.7-R1.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="D:/Program Files (x86)/imports/Factions1.4.6olderrr.jar"/>
+	<classpathentry kind="lib" path="D:/Program Files (x86)/imports/WorldGuard.jar"/>
+	<classpathentry kind="lib" path="D:/Program Files (x86)/imports/WorldEdit.jar"/>
+	<classpathentry kind="lib" path="D:/Program Files (x86)/testing/craftbukkit-1.4.7-R1.0.jar"/>
+	<classpathentry kind="lib" path="D:/Program Files (x86)/testing/plugins/GunsPlus-1.5-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="D:/Program Files (x86)/testing/plugins/ApiPlus-1.6-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="D:/Program Files (x86)/imports/LWC.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
