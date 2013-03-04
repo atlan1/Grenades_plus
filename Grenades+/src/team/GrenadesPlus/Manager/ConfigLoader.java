@@ -12,6 +12,10 @@ import org.getspout.spoutapi.material.CustomBlock;
 import org.getspout.spoutapi.material.CustomItem;
 
 import team.ApiPlus.API.Effect.Effect;
+import team.ApiPlus.API.Property.CollectionProperty;
+import team.ApiPlus.API.Property.NumberProperty;
+import team.ApiPlus.API.Property.ObjectProperty;
+import team.ApiPlus.API.Property.StringProperty;
 import team.ApiPlus.Manager.ItemManager;
 import team.ApiPlus.Manager.RecipeManager;
 import team.ApiPlus.Util.FileUtil;
@@ -125,12 +129,12 @@ public class ConfigLoader {
 				//triggers has to be loaded after creation because they need the throwable as effectholder parameter
 				List<ExplosivesTrigger> triggers = ConfigParser.parseTriggers(path.toString()+".triggers", t);
 				
-				t.addProperty("SOUNDURL", sound);
-				t.addProperty("RADIUS", radius);
-				t.addProperty("SOUNDVOLUME", soundvolume);
-				t.addProperty("SPEED", speed);
-				t.addProperty("TRIGGERS", triggers);
-				t.addProperty("EFFECTS", effects);
+				t.addProperty("SOUNDURL", new StringProperty(sound));
+				t.addProperty("RADIUS", new NumberProperty(radius));
+				t.addProperty("SOUNDVOLUME", new NumberProperty(soundvolume));
+				t.addProperty("SPEED", new NumberProperty(speed));
+				t.addProperty("TRIGGERS", new CollectionProperty<ExplosivesTrigger>(triggers));
+				t.addProperty("EFFECTS", new CollectionProperty<Effect>(effects));
 				
 			}catch (Exception e) {
 				Util.warn("Config Error: " + e.getMessage());
@@ -171,11 +175,11 @@ public class ConfigLoader {
 				
 				List<ExplosivesTrigger> triggers = ConfigParser.parseTriggers(path.toString()+".triggers", t);
 				
-				t.addProperty("SOUNDURL", sound);
-				t.addProperty("SOUNDVOLUME", soundvolume);
-				t.addProperty("TRIGGERS", triggers);
-				t.addProperty("DESIGN", design);
-				t.addProperty("EFFECTS", effects);
+				t.addProperty("SOUNDURL", new StringProperty(sound));
+				t.addProperty("SOUNDVOLUME", new NumberProperty(soundvolume));
+				t.addProperty("TRIGGERS", new CollectionProperty<ExplosivesTrigger>(triggers));
+				t.addProperty("DESIGN", new ObjectProperty<DesignType>(design));
+				t.addProperty("EFFECTS", new CollectionProperty<Effect>(effects));
 				
 				if(design.isAttaching()){
 					for(BlockFace bf : BlockFace.values()){
@@ -221,7 +225,7 @@ public class ConfigLoader {
 		int range = ConfigLoader.generalConfig.getInt("detonator.range", 30);
 		try {
 			Detonator deto = (Detonator) ItemManager.getInstance().buildItem(GrenadesPlus.plugin, name, tex, "Detonator");
-			deto.addProperty("RANGE", range);
+			deto.addProperty("RANGE", new NumberProperty(range));
 			GrenadesPlus.detonator = deto;
 		} catch (Exception e) {
 			Util.warn(e.getMessage());

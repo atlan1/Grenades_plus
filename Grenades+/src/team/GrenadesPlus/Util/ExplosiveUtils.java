@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 
-import team.ApiPlus.API.PropertyHolder;
+import team.ApiPlus.API.Property.*;
 import team.ApiPlus.API.Effect.Effect;
 import team.ApiPlus.API.Effect.EffectType;
 import team.ApiPlus.API.Effect.EntityEffect;
@@ -102,6 +102,7 @@ public class ExplosiveUtils {
 		return false;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static boolean isPlaceable(ItemStack i){
 		if(i == null) return false;
 		for(Placeable e : GrenadesPlus.allPlaceables){
@@ -109,7 +110,7 @@ public class ExplosiveUtils {
 			if(sis.getDurability()==i.getDurability()&&sis.getTypeId()==i.getTypeId()){
 				return true;
 			}
-			if(((DesignType)e.getProperty("DESIGN")).isAttaching())
+			if((((ObjectProperty<DesignType>)e.getProperty("DESIGN")).getValue()).isAttaching())
 				for(Placeable w : GrenadesPlus.wallDesignPlaceables.get(e).values()){
 					SpoutItemStack sis2 = new SpoutItemStack(w);
 					if(sis2.getDurability()==i.getDurability()&&sis2.getTypeId()==i.getTypeId()){
@@ -120,6 +121,7 @@ public class ExplosiveUtils {
 		return false;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static boolean isPlaceable(Block b){
 		if(b == null) return false;
 		for(Placeable e : GrenadesPlus.allPlaceables){
@@ -127,7 +129,7 @@ public class ExplosiveUtils {
 			if(sb.getCustomBlock()!=null&&sb.getCustomBlock().equals(e)){
 				return true;
 			}
-			if(((DesignType)e.getProperty("DESIGN")).isAttaching())
+			if((((ObjectProperty<DesignType>)e.getProperty("DESIGN")).getValue()).isAttaching())
 				for(Placeable w : GrenadesPlus.wallDesignPlaceables.get(e).values()){
 					SpoutBlock sb2 = (SpoutBlock) b;
 					if(sb2.getCustomBlock()!=null&&sb2.getCustomBlock().equals(w)){
@@ -188,7 +190,7 @@ public class ExplosiveUtils {
 	
 	@SuppressWarnings("unchecked")
 	public static void performEffects(Grenadier g, Explosive e, Location explosive){
-		List<Effect> effects = (List<Effect>) ((PropertyHolder)e).getProperty("EFFECTS");
+		List<Effect> effects = (List<Effect>) ((CollectionProperty<Effect>)((PropertyHolder)e).getProperty("EFFECTS")).getValue();
 		LivingEntity grenadierEntity = null;
 		Location grenadierLoc = null;
 		if(g!=null&&g instanceof LivingGrenadier)

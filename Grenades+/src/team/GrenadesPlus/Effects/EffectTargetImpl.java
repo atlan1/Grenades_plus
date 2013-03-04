@@ -3,9 +3,10 @@ package team.GrenadesPlus.Effects;
 import java.util.HashMap;
 import java.util.Map;
 
-import team.ApiPlus.API.PropertyHolder;
+import team.ApiPlus.API.Property.*;
 import team.ApiPlus.API.Effect.EffectTarget;
 
+@SuppressWarnings("rawtypes")
 public class EffectTargetImpl implements EffectTarget, PropertyHolder{
 
 	private EffectTargetType ett;
@@ -13,28 +14,29 @@ public class EffectTargetImpl implements EffectTarget, PropertyHolder{
 	public EffectTargetImpl(EffectTargetType ett){
 		this.ett = ett;
 	}
-	private Map<String, Object> properties = new HashMap<String, Object>();
+	
+	private Map<String, Property> properties = new HashMap<String, Property>();
 
 	
 	@Override
-	public Object getProperty(String id) {
+	public Property getProperty(String id) {
 		return properties.get(id);
 	}
 
 	@Override
-	public void addProperty(String id, Object property) {
+	public void addProperty(String id, Property property) {
 		if(!properties.containsKey(id))
 			properties.put(id, property);
 	}
 
 	@Override
-	public Map<String, Object> getProperties() {
+	public Map<String, Property> getProperties() {
 		return properties;
 	}
 
 	@Override
-	public void setProperties(Map<String, Object> properties) {
-		this.properties = new HashMap<String, Object>(properties);
+	public void setProperties(Map<String, Property> properties) {
+		this.properties = new HashMap<String, Property>(properties);
 	}
 
 	@Override
@@ -44,13 +46,13 @@ public class EffectTargetImpl implements EffectTarget, PropertyHolder{
 	}
 
 	@Override
-	public void editProperty(String id, Object property) {
+	public void editProperty(String id, Property property) {
 		if(properties.containsKey(id))
 			properties.put(id, property);
 	}
 	
 	@Override
-	public void setProperty(String id, Object property) {
+	public void setProperty(String id, Property property) {
 		addProperty(id, property);
 		editProperty(id, property);
 	}

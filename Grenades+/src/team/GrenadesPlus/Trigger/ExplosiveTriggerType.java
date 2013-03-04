@@ -9,13 +9,13 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.entity.CraftItem;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftItem;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
 import org.getspout.spoutapi.block.SpoutBlock;
 import team.ApiPlus.API.EffectHolder;
-import team.ApiPlus.API.PropertyHolder;
+import team.ApiPlus.API.Property.*;
 import team.ApiPlus.API.Trigger.Trigger;
 import team.ApiPlus.API.Trigger.TriggerTask;
 import team.ApiPlus.API.Trigger.TriggerTaskModel;
@@ -28,6 +28,7 @@ import team.GrenadesPlus.Util.Grenadier;
 import team.GrenadesPlus.Util.LivingGrenadier;
 import team.GrenadesPlus.Util.Util;
 
+@SuppressWarnings("rawtypes")
 public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 	
 	ONHIT(true), DETONATOR(false), SHOCK(false), TIME(null), REDSTONE(false);
@@ -53,7 +54,6 @@ public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 		}
 	};
 	
-	private Map<String, Object> properties = new HashMap<String, Object>();
 	
 	private ExplosiveTriggerType(Boolean b){
 		usage = b;
@@ -132,9 +132,9 @@ public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 	
 	public static ExplosiveTriggerType SHOCK(Trigger t, TriggerActivationType tat, int[]rad){
 		ExplosiveTriggerType tt = ExplosiveTriggerType.SHOCK;
-		tt.addProperty("RADIUSX", rad[0]);
-		tt.addProperty("RADIUSY", rad[1]);
-		tt.addProperty("RADIUSZ", rad[2]);
+		tt.addProperty("RADIUSX", new NumberProperty(rad[0]));
+		tt.addProperty("RADIUSY", new NumberProperty(rad[1]));
+		tt.addProperty("RADIUSZ", new NumberProperty(rad[2]));
 		tt.tat = tat;
 		tt.t = t;
 		tt.activation = new TriggerTaskModel(GrenadesPlus.plugin, "repeating", 5, Explosive.class, Grenadier.class, Block.class){
@@ -149,7 +149,7 @@ public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 					ExplosivesTrigger.unregisterBlock(b);
 				}
 				ExplosivesTrigger.addTask(id, (TriggerTask)t);
-				List<Entity> ents = new ArrayList<Entity>(Utils.getNearbyEntities(b.getLocation(), ((Integer)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("RADIUSX")), ((Integer)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("RADIUSY")), ((Integer)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("RADIUSZ"))));
+				List<Entity> ents = new ArrayList<Entity>(Utils.getNearbyEntities(b.getLocation(), (((NumberProperty)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("RADIUSX")).getValue().intValue()), (((NumberProperty)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("RADIUSY")).getValue().intValue()), (((NumberProperty)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("RADIUSZ")).getValue().intValue())));
 				for(Entity ent : new ArrayList<Entity>(ents)) {
 					if(ent instanceof Item||ent instanceof ExperienceOrb||g instanceof LivingGrenadier&&ent.equals(((LivingGrenadier)g).getLivingEntity()))
 						ents.remove(ent);
@@ -166,7 +166,7 @@ public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 	
 	public static ExplosiveTriggerType TIME(Trigger t, TriggerActivationType tat, int time){
 		ExplosiveTriggerType tt = ExplosiveTriggerType.TIME;
-		tt.addProperty("TIME", time);
+		tt.addProperty("TIME", new NumberProperty(time));
 		tt.tat = tat;
 		tt.t = t;
 		tt.activation = new TriggerTaskModel(GrenadesPlus.plugin, "delayed", time, Explosive.class, Grenadier.class, Item.class, Block.class){
@@ -201,10 +201,11 @@ public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 	
 	public static ExplosiveTriggerType REDSTONE(Trigger t, TriggerActivationType tat, boolean active){
 		ExplosiveTriggerType tt = ExplosiveTriggerType.REDSTONE;
-		tt.addProperty("ACTIVE", active);
+		tt.addProperty("ACTIVE", new ObjectProperty<Boolean>(active));
 		tt.tat = tat;
 		tt.t = t;
 		tt.activation = new TriggerTaskModel(GrenadesPlus.plugin, "repeating", 10, Explosive.class, Grenadier.class, Block.class){
+			@SuppressWarnings("unchecked")
 			public void run(Task t) { 
 				Block b = (Block) t.getArg(2);
 				Explosive e = (Explosive) t.getArg(0);
@@ -216,7 +217,7 @@ public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 					ExplosivesTrigger.unregisterBlock(b);
 				}
 				ExplosivesTrigger.addTask(id, (TriggerTask)t);
-				if(((Boolean)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("ACTIVE")&&b.isBlockPowered())||(!(Boolean)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("ACTIVE")&&!b.isBlockPowered())){
+				if((((ObjectProperty<Boolean>)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("ACTIVE")).getValue()&&b.isBlockPowered())||(!((ObjectProperty<Boolean>)((PropertyHolder) ((TriggerTask) t).getTrigger().getTriggerType()).getProperty("ACTIVE")).getValue()&&!b.isBlockPowered())){
 					((TriggerTask) t).getTrigger().triggered(e, g, b.getLocation());
 					ExplosivesTrigger.stopTasks(id);
 					ExplosivesTrigger.unregisterBlock(b);
@@ -262,26 +263,27 @@ public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 	public static List<ExplosiveTriggerType> getPlaceableTriggers(){
 		return placeableTriggers;
 	}
+	private Map<String, Property> properties = new HashMap<String, Property>();
 	
 	@Override
-	public Object getProperty(String id) {
+	public Property getProperty(String id) {
 		return properties.get(id);
 	}
 
 	@Override
-	public void addProperty(String id, Object property) {
+	public void addProperty(String id, Property property) {
 		if(!properties.containsKey(id))
 			properties.put(id, property);
 	}
 
 	@Override
-	public Map<String, Object> getProperties() {
+	public Map<String, Property> getProperties() {
 		return properties;
 	}
 
 	@Override
-	public void setProperties(Map<String, Object> properties) {
-		this.properties = new HashMap<String, Object>(properties);
+	public void setProperties(Map<String, Property> properties) {
+		this.properties = new HashMap<String, Property>(properties);
 	}
 
 	@Override
@@ -291,13 +293,13 @@ public enum ExplosiveTriggerType implements PropertyHolder, TriggerType{
 	}
 
 	@Override
-	public void editProperty(String id, Object property) {
+	public void editProperty(String id, Property property) {
 		if(properties.containsKey(id))
 			properties.put(id, property);
 	}
 	
 	@Override
-	public void setProperty(String id, Object property) {
+	public void setProperty(String id, Property property) {
 		addProperty(id, property);
 		editProperty(id, property);
 	}

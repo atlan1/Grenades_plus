@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.getspout.spoutapi.inventory.SpoutItemStack;
 import team.ApiPlus.API.Trigger.TriggerTask;
 import team.ApiPlus.Util.Task;
+import team.ApiPlus.API.Property.*;
 import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.API.Event.DetonateEvent;
 import team.GrenadesPlus.API.Event.ThrowEvent;
@@ -49,7 +50,7 @@ public class TriggerListener implements Listener {
 			}
 		}
 		for(Placeable p : new HashSet<Placeable>(ps.keySet())){
-			List<ExplosivesTrigger> triggers = ((ArrayList<ExplosivesTrigger>)p.getProperty("TRIGGERS"));
+			List<ExplosivesTrigger> triggers = ((ArrayList<ExplosivesTrigger>)((CollectionProperty<ExplosivesTrigger>)p.getProperty("TRIGGERS")).getValue());
 			for(ExplosivesTrigger t : triggers){
 				if(((ExplosiveTriggerType) t.getTriggerType()).equals(ExplosiveTriggerType.DETONATOR)){
 					exploded = true;
@@ -66,7 +67,7 @@ public class TriggerListener implements Listener {
 	@SuppressWarnings("unchecked")
 	@EventHandler
 	public void onThrow(ThrowEvent e){
-		List<ExplosivesTrigger> triggers = ((ArrayList<ExplosivesTrigger>)e.getThrowable().getProperty("TRIGGERS"));
+		List<ExplosivesTrigger> triggers = ((ArrayList<ExplosivesTrigger>)((CollectionProperty<ExplosivesTrigger>)e.getThrowable().getProperty("TRIGGERS")).getValue());
 		for(ExplosivesTrigger t : triggers){
 			ExplosiveTriggerType et = (ExplosiveTriggerType)t.getTriggerType();
 			if(et.getTriggerActivationType().equals(TriggerActivationType.ONTHROW)){
@@ -84,7 +85,7 @@ public class TriggerListener implements Listener {
 	
 	@SuppressWarnings("unchecked")
 	public static void onPlace(Placeable p, Grenadier g, Block b){
-		List<ExplosivesTrigger> triggers = ((ArrayList<ExplosivesTrigger>)p.getProperty("TRIGGERS"));
+		List<ExplosivesTrigger> triggers = ((ArrayList<ExplosivesTrigger>)((CollectionProperty<ExplosivesTrigger>)p.getProperty("TRIGGERS")).getValue());
 		for(ExplosivesTrigger t : triggers){
 			ExplosiveTriggerType et = (ExplosiveTriggerType)t.getTriggerType();
 			if(et.getTriggerActivationType().equals(TriggerActivationType.ONPLACE)){
@@ -104,7 +105,7 @@ public class TriggerListener implements Listener {
 	
 	@SuppressWarnings("unchecked")
 	public static void onInteract(Placeable p, Grenadier g, Block b){
-		List<ExplosivesTrigger> triggers = ((ArrayList<ExplosivesTrigger>)p.getProperty("TRIGGERS"));
+		List<ExplosivesTrigger> triggers = ((ArrayList<ExplosivesTrigger>)((CollectionProperty<ExplosivesTrigger>)p.getProperty("TRIGGERS")).getValue());
 		for(ExplosivesTrigger t : triggers){
 			ExplosiveTriggerType et = (ExplosiveTriggerType)t.getTriggerType();
 			if(et.getTriggerActivationType().equals(TriggerActivationType.ONINTERACT)){

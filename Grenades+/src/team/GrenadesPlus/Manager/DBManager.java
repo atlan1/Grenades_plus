@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.bukkit.block.Block;
+
+import team.ApiPlus.API.Property.CollectionProperty;
 import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.Block.Placeable;
 import team.GrenadesPlus.Trigger.ExplosiveTriggerType;
@@ -116,7 +118,7 @@ public class DBManager {
    		System.out.print("check 1");
     	   Placeable p = ExplosiveUtils.getPlaceable(block);
     	    @SuppressWarnings("unchecked")
-			List<ExplosivesTrigger> triggers = ((ArrayList<ExplosivesTrigger>)p.getProperty("TRIGGERS"));
+			List<ExplosivesTrigger> triggers = ((ArrayList<ExplosivesTrigger>)((CollectionProperty<ExplosivesTrigger>)p.getProperty("TRIGGERS")).getValue());
        		for(ExplosivesTrigger t : triggers){
        			ExplosiveTriggerType et = (ExplosiveTriggerType)t.getTriggerType();
        			if(et.getTriggerActivationType().equals(TriggerActivationType.ONPLACE)||et.getTriggerActivationType().equals(TriggerActivationType.ONINTERACT)&&pd.isInteracted()){

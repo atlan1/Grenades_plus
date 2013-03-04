@@ -8,6 +8,9 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.Plugin;
 import org.getspout.spoutapi.player.SpoutPlayer;
+
+import team.ApiPlus.API.Property.NumberProperty;
+import team.ApiPlus.API.Property.StringProperty;
 import team.ApiPlus.API.Type.BlockTypeEffectPlusProperty;
 import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.Manager.DBManager;
@@ -67,7 +70,7 @@ public class Placeable extends BlockTypeEffectPlusProperty implements Explosive{
 	@Override
 	public void performEffects(Object... args) {
 		Location ex = (Location) args[2];
-		Util.playCustomSound(GrenadesPlus.plugin, (Location)args[2],(String)getProperty("SOUNDURL"), (Integer)getProperty("SOUNDVOLUME"));
+		Util.playCustomSound(GrenadesPlus.plugin, (Location)args[2],((StringProperty)getProperty("SOUNDURL")).getValue(), ((NumberProperty)getProperty("SOUNDVOLUME")).getValue().intValue());
 		onBlockDestroyed(ex.getWorld(), ex.getBlockX(), ex.getBlockY(), ex.getBlockZ(), null);
 		ex.getBlock().setTypeId(0, true);
 		ExplosiveUtils.performEffects((Grenadier)args[0], (Explosive)args[1], (Location)args[2]);

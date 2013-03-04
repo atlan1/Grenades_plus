@@ -3,6 +3,8 @@ package team.GrenadesPlus.Item;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 
+import team.ApiPlus.API.Property.NumberProperty;
+import team.ApiPlus.API.Property.StringProperty;
 import team.ApiPlus.API.Type.ItemTypeEffectPlusProperty;
 import team.GrenadesPlus.GrenadesPlus;
 import team.GrenadesPlus.Util.Explosive;
@@ -18,7 +20,7 @@ public class Throwable extends ItemTypeEffectPlusProperty implements Explosive{
 
 	@Override
 	public void performEffects(Object... args) {
-		Util.playCustomSound(GrenadesPlus.plugin, (Location)args[2],(String)getProperty("SOUNDURL"), (Integer)getProperty("SOUNDVOLUME"));
+		Util.playCustomSound(GrenadesPlus.plugin, (Location)args[2],((StringProperty)getProperty("SOUNDURL")).getValue(), ((NumberProperty)getProperty("SOUNDVOLUME")).getValue().intValue());
 		ExplosiveUtils.performEffects((Grenadier)args[0], (Explosive)args[1], (Location)args[2]);
 	}
 

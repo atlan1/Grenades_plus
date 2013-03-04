@@ -10,6 +10,8 @@ import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.block.SpoutBlock;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
+import team.ApiPlus.API.Property.NumberProperty;
+import team.ApiPlus.API.Property.ObjectProperty;
 import team.ApiPlus.Util.Task;
 import team.ApiPlus.Util.Utils;
 import team.GrenadesPlus.API.Event.DetonateEvent;
@@ -47,11 +49,12 @@ public class GrenadesPlusPlayer extends LivingGrenadier{
 	@Override
 	public void Throw(Throwable t) {
 		if(!PlayerUtils.hasPermissionToThrow(getPlayer(), t)) return;
-		Item i = ExplosiveUtils.throwThrowable(getPlayer().getInventory(), getPlayer().getItemInHand(), Utils.getHandLocation(getPlayer()), ((Number)t.getProperty("SPEED")).doubleValue()+(getPlayer().isSprinting()?.5d:0));
+		Item i = ExplosiveUtils.throwThrowable(getPlayer().getInventory(), getPlayer().getItemInHand(), Utils.getHandLocation(getPlayer()), ((NumberProperty)t.getProperty("SPEED")).getValue().doubleValue()+(getPlayer().isSprinting()?.5d:0));
 		ThrowEvent event = new ThrowEvent(this, t, i);
 		Bukkit.getPluginManager().callEvent(event);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void Place(Placeable p, Block b, BlockFace bf) {
 		if(!PlayerUtils.hasPermissionToPlace(getPlayer(), p)) return;
@@ -59,7 +62,7 @@ public class GrenadesPlusPlayer extends LivingGrenadier{
 			SpoutBlock sb = (SpoutBlock)b;
 			sb.setTypeIdAndData(p.getBlockId(), (byte)(p.getBlockData()), true);
 			SpoutManager.getMaterialManager().overrideBlock(sb, p);
-		}else if(((DesignType)p.getProperty("DESIGN")).isAttaching()&&!bf.equals(BlockFace.UP)){
+		}else if(((ObjectProperty<DesignType>)p.getProperty("DESIGN")).getValue().isAttaching()&&!bf.equals(BlockFace.UP)){
 			Task t = new Task(GrenadesPlus.plugin,p, b, bf){
 				public void run(){
 					BlockFace bf = (BlockFace)this.getArg(2);
@@ -77,7 +80,7 @@ public class GrenadesPlusPlayer extends LivingGrenadier{
 
 	@Override
 	public void Detonate(Detonator d) {
-		DetonateEvent event = new DetonateEvent(this, ExplosiveUtils.getBlocksInRange(getLocation(), ((Number)d.getProperty("RANGE")).intValue(), this.getAssignedBlocks()));
+		DetonateEvent event = new DetonateEvent(this, ExplosiveUtils.getBlocksInRange(getLocation(), ((NumberProperty)d.getProperty("RANGE")).getValue().intValue(), this.getAssignedBlocks()));
 		Bukkit.getPluginManager().callEvent(event);
 	}
 
