@@ -225,6 +225,10 @@ public class ConfigParser {
 	    	case TARGETENTITY:
 	    		efftar.addProperty("RADIUS", new NumberProperty((Integer)searchKeyInMapList(args, "radius").get("radius")));
 	    		break;
+		case GRENADIER:
+			break;
+		default:
+			break;
     	}
     	return efftar;
     }

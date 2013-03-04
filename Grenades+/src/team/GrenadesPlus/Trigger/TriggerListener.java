@@ -78,6 +78,14 @@ public class TriggerListener implements Listener {
 					case ONHIT:
 						t.activate(e.getThrowable(), e.getGrenadier(), e.getItem());
 						break;
+				case DETONATOR:
+					break;
+				case REDSTONE:
+					break;
+				case SHOCK:
+					break;
+				default:
+					break;
 				}
 			}
 		}

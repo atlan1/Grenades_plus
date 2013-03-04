@@ -9,7 +9,11 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+<<<<<<< HEAD
 import org.bukkit.craftbukkit.v1_4_6.entity.CraftItem;
+=======
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftItem;
+>>>>>>> 31c300ea399984a0b3fbf2c6b7a2e5eae243ab89
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
