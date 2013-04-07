@@ -21,6 +21,7 @@ public class CommandEx implements CommandExecutor{
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if(args.length==1)
 		if(args[0].equalsIgnoreCase("help")) {
 			sender.sendMessage(help);
 			return true;

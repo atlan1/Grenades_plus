@@ -115,14 +115,12 @@ public class DBManager {
 	private static void startTriggers(PlaceableData pd) {
 	   Block block = pd.getLoc().getBlock();
        if(ExplosiveUtils.isPlaceable(block)){
-   		System.out.print("check 1");
     	   Placeable p = ExplosiveUtils.getPlaceable(block);
     	    @SuppressWarnings("unchecked")
 			List<ExplosivesTrigger> triggers = ((ArrayList<ExplosivesTrigger>)((CollectionProperty<ExplosivesTrigger>)p.getProperty("TRIGGERS")).getValue());
        		for(ExplosivesTrigger t : triggers){
        			ExplosiveTriggerType et = (ExplosiveTriggerType)t.getTriggerType();
        			if(et.getTriggerActivationType().equals(TriggerActivationType.ONPLACE)||et.getTriggerActivationType().equals(TriggerActivationType.ONINTERACT)&&pd.isInteracted()){
-       				System.out.print("check 3");
        				switch(et){
        					case DETONATOR:
        						break;

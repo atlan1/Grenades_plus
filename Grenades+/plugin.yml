@@ -1,6 +1,6 @@
 name: GrenadesPlus
 main: team.GrenadesPlus.GrenadesPlus
-version: 1.4
+version: 1.5
 depend: [Spout, ApiPlus]
 authors: [SirTyler, Atlan1]
 description: >
