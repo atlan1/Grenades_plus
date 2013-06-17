@@ -1,10 +1,10 @@
 package team.GrenadesPlus.Util;
 
-import net.minecraft.server.v1_5_R2.Packet18ArmAnimation;
-import net.minecraft.server.v1_5_R2.WorldServer;
+import net.minecraft.server.v1_5_R3.Packet18ArmAnimation;
+import net.minecraft.server.v1_5_R3.WorldServer;
 
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_5_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.SpoutManager;
